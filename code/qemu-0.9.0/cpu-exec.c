@@ -37,7 +37,7 @@
 
 int tb_invalidated_flag;
 
-//#define DEBUG_EXEC
+#define DEBUG_EXEC
 //#define DEBUG_SIGNAL
 
 #if defined(TARGET_ARM) || defined(TARGET_SPARC) || defined(TARGET_M68K)
