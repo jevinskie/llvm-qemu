@@ -157,7 +157,8 @@ static inline int tlb_set_page(CPUState *env, target_ulong vaddr,
 #define USE_DIRECT_JUMP
 #endif
 #if defined(__i386__) && !defined(_WIN32)
-#define USE_DIRECT_JUMP
+// don't use direct jumps to generate more portable code for jumps
+//#define USE_DIRECT_JUMP
 #endif
 
 typedef struct TranslationBlock {

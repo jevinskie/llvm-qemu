@@ -16,6 +16,9 @@
 #include "llvm/Bitcode/ReaderWriter.h"
 #include "llvm/Support/MemoryBuffer.h"
 
+#include "llvm/Transforms/Utils/Cloning.h"
+#include "llvm/Transforms/Utils/BasicBlockUtils.h"
+
 #include <iostream>
 
 void *env;
@@ -103,12 +106,12 @@ int main() {
   }
 
   // move immediate
-  GlobalVariable *op_param1 = M->getGlobalVariable("__op_param1", false);
-  if (op_param1 == NULL) {
-    std::cout << "__op_param1 not found\n";
-    return -1;
-  }
-  std::cout << "found __op_param1\n";
+  // GlobalVariable *op_param1 = M->getGlobalVariable("__op_param1", false);
+//   if (op_param1 == NULL) {
+//     std::cout << "__op_param1 not found\n";
+//     return -1;
+//   }
+//   std::cout << "found __op_param1\n";
 
   Function *op_imm = M->getFunction("op_movl_T0_im");
   
@@ -119,22 +122,103 @@ int main() {
 
   std::cout << "found op_movl_T0_im\n";
 
-  EE->addGlobalMapping(op_param1, (void *) 12345);
+  std::cout << *op_imm;
 
-  void *codeImm = EE->getPointerToFunction(op_imm);
+  // load test micro op
+  // add label parameter
+  // patch branch to branch to label parameter
 
-  if (codeImm == NULL) {
-    std::cout << "op_movl_T0_imm could not be compiled\n";
+  Function *op_test_eq = M->getFunction("op_test_eq");
+
+  if (op_test_eq == NULL) {
+    std::cout << "op_test_eq not found\n";
     return -1;
   }
 
-  std::cout << "compiled op_imm\n";
+  std::cout << "found op_test_eq\n";
+  
+  std::cout << *op_test_eq;
 
-  std::vector<GenericValue> noargs2;
-  GenericValue gv2 = EE->runFunction(op_imm, noargs2);
+//   EE->addGlobalMapping(op_param1, (void *) 12345);
 
-  std::cout << "op_imm was executed\n";
-  std::cout << T0;
+//   void *codeImm = EE->getPointerToFunction(op_imm);
+
+//   if (codeImm == NULL) {
+//     std::cout << "op_movl_T0_imm could not be compiled\n";
+//     return -1;
+//   }
+
+//   std::cout << "compiled op_imm\n";
+
+//   std::vector<GenericValue> noargs2;
+//   GenericValue gv2 = EE->runFunction(op_imm, noargs2);
+
+//   std::cout << "op_imm was executed\n";
+//   std::cout << T0;
+
+  // create a translation block by creating a new function
+  // with function calls to the micro ops
+  // inline the micro ops
+
+  Function *tb =
+    cast<Function>(M->getOrInsertFunction("tb", Type::VoidTy, (Type *)0));
+
+  BasicBlock *BB = new BasicBlock("EntryBlock", tb);  
+
+  Value * args[3];
+
+  Value *Deadbeef = ConstantInt::get(Type::Int32Ty, 0xDEADBEEF);
+  Value *Zero = ConstantInt::get(Type::Int32Ty, 0);
+
+  args[0] = Deadbeef;
+  args[1] = Zero;
+  args[2] = Zero;
+
+  CallInst *op3CallRes = new CallInst(op_test_eq,  (Value **)&args, 3, "", BB);
+  op3CallRes->setTailCall(true);
+
+  CallInst *op1CallRes = new CallInst(op, "", BB);
+  op1CallRes->setTailCall(true);
+
+  BasicBlock *nextIns = new BasicBlock("nextInstruction", tb);
+  BranchInst *link = new BranchInst(nextIns, BB);
+
+  CallInst *op2CallRes = new CallInst(op_imm,  (Value **)&args, 3, "", nextIns);
+  op2CallRes->setTailCall(true);
+
+  // Create the return instruction and add it to the basic block.
+  new ReturnInst(nextIns);
+
+  Function *dummy = M->getFunction("nextIns");
+
+ InlineFunction(op3CallRes);
+
+
+  for (Value::use_iterator i = dummy->use_begin(), e = dummy->use_end(); i != e; ++i)
+    if (Instruction *Inst = dyn_cast<Instruction>(*i)) {
+      if (Inst->getParent()->getParent() == tb) {
+      llvm::cerr << "dummy is used in instruction:\n";
+      llvm::cerr << *Inst << "\n";
+BasicBlock::iterator ii(Inst);
+
+ReplaceInstWithInst(Inst->getParent()->getInstList(), ii,
+                    new BranchInst(nextIns));
+      }
+    }
+
+  InlineFunction(op1CallRes);
+  InlineFunction(op2CallRes);
+
+
+  std::cout << *tb;
+
+
+  void *codeTB = EE->getPointerToFunction(tb);
+
+  if (codeTB == NULL) {
+    std::cout << "TB could not be compiled\n";
+    return -1;
+  }
   
 //   // Create some module to put our function into it.
 //   Module *M = new Module("test");
@@ -200,5 +284,6 @@ int main() {
 
 //   // Import result of execution:
 //   std::cout << "Result: " << gv.IntVal.toString(10) << "\n";
+  
   return 0;
 }

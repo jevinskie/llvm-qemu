@@ -20,6 +20,11 @@
  */
 #include "exec.h"
 
+void nextIns(void) {
+}
+
+#define OP(name) void OPPROTO op_##name (long __op_param1, long __op_param2, long __op_param3)
+
 #define REGNAME r0
 #define REG (env->regs[0])
 #include "op_template.h"
@@ -85,63 +90,63 @@
 #define SET_REG(x) REG = x & ~(uint32_t)1
 #include "op_template.h"
 
-void OPPROTO op_bx_T0(void)
+OP(bx_T0)
 {
   env->regs[15] = T0 & ~(uint32_t)1;
   env->thumb = (T0 & 1) != 0;
 }
 
-void OPPROTO op_movl_T0_0(void)
+OP(movl_T0_0)
 {
     T0 = 0;
 }
 
-void OPPROTO op_movl_T0_im(void)
+OP(movl_T0_im)
 {
     T0 = PARAM1;
 }
 
-void OPPROTO op_movl_T0_T1(void)
+OP(movl_T0_T1)
 {
     T0 = T1;
 }
 
-void OPPROTO op_movl_T1_im(void)
+OP(movl_T1_im)
 {
     T1 = PARAM1;
 }
 
-void OPPROTO op_mov_CF_T1(void)
+OP(mov_CF_T1)
 {
     env->CF = ((uint32_t)T1) >> 31;
 }
 
-void OPPROTO op_movl_T2_im(void)
+OP(movl_T2_im)
 {
     T2 = PARAM1;
 }
 
-void OPPROTO op_addl_T1_im(void)
+OP(addl_T1_im)
 {
     T1 += PARAM1;
 }
 
-void OPPROTO op_addl_T1_T2(void)
+OP(addl_T1_T2)
 {
     T1 += T2;
 }
 
-void OPPROTO op_subl_T1_T2(void)
+OP(subl_T1_T2)
 {
     T1 -= T2;
 }
 
-void OPPROTO op_addl_T0_T1(void)
+OP(addl_T0_T1)
 {
     T0 += T1;
 }
 
-void OPPROTO op_addl_T0_T1_cc(void)
+OP(addl_T0_T1_cc)
 {
     unsigned int src1;
     src1 = T0;
@@ -151,12 +156,12 @@ void OPPROTO op_addl_T0_T1_cc(void)
     env->VF = (src1 ^ T1 ^ -1) & (src1 ^ T0);
 }
 
-void OPPROTO op_adcl_T0_T1(void)
+OP(adcl_T0_T1)
 {
     T0 += T1 + env->CF;
 }
 
-void OPPROTO op_adcl_T0_T1_cc(void)
+OP(adcl_T0_T1_cc)
 {
     unsigned int src1;
     src1 = T0;
@@ -174,12 +179,12 @@ void OPPROTO op_adcl_T0_T1_cc(void)
 
 #define OPSUB(sub, sbc, res, T0, T1)            \
                                                 \
-void OPPROTO op_ ## sub ## l_T0_T1(void)        \
+OP(sub)                                         \
 {                                               \
     res = T0 - T1;                              \
 }                                               \
                                                 \
-void OPPROTO op_ ## sub ## l_T0_T1_cc(void)     \
+OP(sub ## l_T0_T1_cc)                           \
 {                                               \
     unsigned int src1;                          \
     src1 = T0;                                  \
@@ -190,12 +195,12 @@ void OPPROTO op_ ## sub ## l_T0_T1_cc(void)     \
     res = T0;                                   \
 }                                               \
                                                 \
-void OPPROTO op_ ## sbc ## l_T0_T1(void)        \
+OP(sbc ## l_T0_T1)                              \
 {                                               \
     res = T0 - T1 + env->CF - 1;                \
 }                                               \
                                                 \
-void OPPROTO op_ ## sbc ## l_T0_T1_cc(void)     \
+OP(sbc ## l_T0_T1_cc)                           \
 {                                               \
     unsigned int src1;                          \
     src1 = T0;                                  \
@@ -216,186 +221,186 @@ OPSUB(sub, sbc, T0, T0, T1)
 
 OPSUB(rsb, rsc, T0, T1, T0)
 
-void OPPROTO op_andl_T0_T1(void)
+OP(andl_T0_T1)
 {
     T0 &= T1;
 }
 
-void OPPROTO op_xorl_T0_T1(void)
+OP(xorl_T0_T1)
 {
     T0 ^= T1;
 }
 
-void OPPROTO op_orl_T0_T1(void)
+OP(orl_T0_T1)
 {
     T0 |= T1;
 }
 
-void OPPROTO op_bicl_T0_T1(void)
+OP(bicl_T0_T1)
 {
     T0 &= ~T1;
 }
 
-void OPPROTO op_notl_T1(void)
+OP(notl_T1)
 {
     T1 = ~T1;
 }
 
-void OPPROTO op_logic_T0_cc(void)
+OP(logic_T0_cc)
 {
     env->NZF = T0;
 }
 
-void OPPROTO op_logic_T1_cc(void)
+OP(logic_T1_cc)
 {
     env->NZF = T1;
 }
 
 #define EIP (env->regs[15])
 
-void OPPROTO op_test_eq(void)
+OP(test_eq)
 {
     if (env->NZF == 0)
         GOTO_LABEL_PARAM(1);;
     FORCE_RET();
 }
 
-void OPPROTO op_test_ne(void)
+OP(test_ne)
 {
     if (env->NZF != 0)
         GOTO_LABEL_PARAM(1);;
     FORCE_RET();
 }
 
-void OPPROTO op_test_cs(void)
+OP(test_cs)
 {
     if (env->CF != 0)
         GOTO_LABEL_PARAM(1);
     FORCE_RET();
 }
 
-void OPPROTO op_test_cc(void)
+OP(test_cc)
 {
     if (env->CF == 0)
         GOTO_LABEL_PARAM(1);
     FORCE_RET();
 }
 
-void OPPROTO op_test_mi(void)
+OP(test_mi)
 {
     if ((env->NZF & 0x80000000) != 0)
         GOTO_LABEL_PARAM(1);
     FORCE_RET();
 }
 
-void OPPROTO op_test_pl(void)
+OP(test_pl)
 {
     if ((env->NZF & 0x80000000) == 0)
         GOTO_LABEL_PARAM(1);
     FORCE_RET();
 }
 
-void OPPROTO op_test_vs(void)
+OP(test_vs)
 {
     if ((env->VF & 0x80000000) != 0)
         GOTO_LABEL_PARAM(1);
     FORCE_RET();
 }
 
-void OPPROTO op_test_vc(void)
+OP(test_vc)
 {
     if ((env->VF & 0x80000000) == 0)
         GOTO_LABEL_PARAM(1);
     FORCE_RET();
 }
 
-void OPPROTO op_test_hi(void)
+OP(test_hi)
 {
     if (env->CF != 0 && env->NZF != 0)
         GOTO_LABEL_PARAM(1);
     FORCE_RET();
 }
 
-void OPPROTO op_test_ls(void)
+OP(test_ls)
 {
     if (env->CF == 0 || env->NZF == 0)
         GOTO_LABEL_PARAM(1);
     FORCE_RET();
 }
 
-void OPPROTO op_test_ge(void)
+OP(test_ge)
 {
     if (((env->VF ^ env->NZF) & 0x80000000) == 0)
         GOTO_LABEL_PARAM(1);
     FORCE_RET();
 }
 
-void OPPROTO op_test_lt(void)
+OP(test_lt)
 {
     if (((env->VF ^ env->NZF) & 0x80000000) != 0)
         GOTO_LABEL_PARAM(1);
     FORCE_RET();
 }
 
-void OPPROTO op_test_gt(void)
+OP(test_gt)
 {
     if (env->NZF != 0 && ((env->VF ^ env->NZF) & 0x80000000) == 0)
         GOTO_LABEL_PARAM(1);
     FORCE_RET();
 }
 
-void OPPROTO op_test_le(void)
+OP(test_le)
 {
     if (env->NZF == 0 || ((env->VF ^ env->NZF) & 0x80000000) != 0)
         GOTO_LABEL_PARAM(1);
     FORCE_RET();
 }
 
-void OPPROTO op_goto_tb0(void)
+OP(goto_tb0)
 {
     GOTO_TB(op_goto_tb0, PARAM1, 0);
 }
 
-void OPPROTO op_goto_tb1(void)
+OP(goto_tb1)
 {
     GOTO_TB(op_goto_tb1, PARAM1, 1);
 }
 
-void OPPROTO op_exit_tb(void)
+OP(exit_tb)
 {
     EXIT_TB();
 }
 
-void OPPROTO op_movl_T0_cpsr(void)
+OP(movl_T0_cpsr)
 {
     T0 = cpsr_read(env);
     FORCE_RET();
 }
 
-void OPPROTO op_movl_T0_spsr(void)
+OP(movl_T0_spsr)
 {
     T0 = env->spsr;
 }
 
-void OPPROTO op_movl_spsr_T0(void)
+OP(movl_spsr_T0)
 {
     uint32_t mask = PARAM1;
     env->spsr = (env->spsr & ~mask) | (T0 & mask);
 }
 
-void OPPROTO op_movl_cpsr_T0(void)
+OP(movl_cpsr_T0)
 {
     cpsr_write(env, T0, PARAM1);
     FORCE_RET();
 }
 
-void OPPROTO op_mul_T0_T1(void)
+OP(mul_T0_T1)
 {
     T0 = T0 * T1;
 }
 
 /* 64 bit unsigned mul */
-void OPPROTO op_mull_T0_T1(void)
+OP(mull_T0_T1)
 {
     uint64_t res;
     res = (uint64_t)T0 * (uint64_t)T1;
@@ -404,7 +409,7 @@ void OPPROTO op_mull_T0_T1(void)
 }
 
 /* 64 bit signed mul */
-void OPPROTO op_imull_T0_T1(void)
+OP(imull_T0_T1)
 {
     uint64_t res;
     res = (int64_t)((int32_t)T0) * (int64_t)((int32_t)T1);
@@ -413,14 +418,14 @@ void OPPROTO op_imull_T0_T1(void)
 }
 
 /* 48 bit signed mul, top 32 bits */
-void OPPROTO op_imulw_T0_T1(void)
+OP(imulw_T0_T1)
 {
   uint64_t res;
   res = (int64_t)((int32_t)T0) * (int64_t)((int32_t)T1);
   T0 = res >> 16;
 }
 
-void OPPROTO op_addq_T0_T1(void)
+OP(addq_T0_T1)
 {
     uint64_t res;
     res = ((uint64_t)T1 << 32) | T0;
@@ -429,7 +434,7 @@ void OPPROTO op_addq_T0_T1(void)
     T0 = res;
 }
 
-void OPPROTO op_addq_lo_T0_T1(void)
+OP(addq_lo_T0_T1)
 {
     uint64_t res;
     res = ((uint64_t)T1 << 32) | T0;
@@ -438,7 +443,7 @@ void OPPROTO op_addq_lo_T0_T1(void)
     T0 = res;
 }
 
-void OPPROTO op_logicq_cc(void)
+OP(logicq_cc)
 {
     env->NZF = (T1 & 0x80000000) | ((T0 | T1) != 0);
 }
@@ -459,75 +464,75 @@ void OPPROTO op_logicq_cc(void)
 
 /* T1 based */
 
-void OPPROTO op_shll_T1_im(void)
+OP(shll_T1_im)
 {
     T1 = T1 << PARAM1;
 }
 
-void OPPROTO op_shrl_T1_im(void)
+OP(shrl_T1_im)
 {
     T1 = (uint32_t)T1 >> PARAM1;
 }
 
-void OPPROTO op_shrl_T1_0(void)
+OP(shrl_T1_0)
 {
     T1 = 0;
 }
 
-void OPPROTO op_sarl_T1_im(void)
+OP(sarl_T1_im)
 {
     T1 = (int32_t)T1 >> PARAM1;
 }
 
-void OPPROTO op_sarl_T1_0(void)
+OP(sarl_T1_0)
 {
     T1 = (int32_t)T1 >> 31;
 }
 
-void OPPROTO op_rorl_T1_im(void)
+OP(rorl_T1_im)
 {
     int shift;
     shift = PARAM1;
     T1 = ((uint32_t)T1 >> shift) | (T1 << (32 - shift));
 }
 
-void OPPROTO op_rrxl_T1(void)
+OP(rrxl_T1)
 {
     T1 = ((uint32_t)T1 >> 1) | ((uint32_t)env->CF << 31);
 }
 
 /* T1 based, set C flag */
-void OPPROTO op_shll_T1_im_cc(void)
+OP(shll_T1_im_cc)
 {
     env->CF = (T1 >> (32 - PARAM1)) & 1;
     T1 = T1 << PARAM1;
 }
 
-void OPPROTO op_shrl_T1_im_cc(void)
+OP(shrl_T1_im_cc)
 {
     env->CF = (T1 >> (PARAM1 - 1)) & 1;
     T1 = (uint32_t)T1 >> PARAM1;
 }
 
-void OPPROTO op_shrl_T1_0_cc(void)
+OP(shrl_T1_0_cc)
 {
     env->CF = (T1 >> 31) & 1;
     T1 = 0;
 }
 
-void OPPROTO op_sarl_T1_im_cc(void)
+OP(sarl_T1_im_cc)
 {
     env->CF = (T1 >> (PARAM1 - 1)) & 1;
     T1 = (int32_t)T1 >> PARAM1;
 }
 
-void OPPROTO op_sarl_T1_0_cc(void)
+OP(sarl_T1_0_cc)
 {
     env->CF = (T1 >> 31) & 1;
     T1 = (int32_t)T1 >> 31;
 }
 
-void OPPROTO op_rorl_T1_im_cc(void)
+OP(rorl_T1_im_cc)
 {
     int shift;
     shift = PARAM1;
@@ -535,7 +540,7 @@ void OPPROTO op_rorl_T1_im_cc(void)
     T1 = ((uint32_t)T1 >> shift) | (T1 << (32 - shift));
 }
 
-void OPPROTO op_rrxl_T1_cc(void)
+OP(rrxl_T1_cc)
 {
     uint32_t c;
     c = T1 & 1;
@@ -544,46 +549,46 @@ void OPPROTO op_rrxl_T1_cc(void)
 }
 
 /* T2 based */
-void OPPROTO op_shll_T2_im(void)
+OP(shll_T2_im)
 {
     T2 = T2 << PARAM1;
 }
 
-void OPPROTO op_shrl_T2_im(void)
+OP(shrl_T2_im)
 {
     T2 = (uint32_t)T2 >> PARAM1;
 }
 
-void OPPROTO op_shrl_T2_0(void)
+OP(shrl_T2_0)
 {
     T2 = 0;
 }
 
-void OPPROTO op_sarl_T2_im(void)
+OP(sarl_T2_im)
 {
     T2 = (int32_t)T2 >> PARAM1;
 }
 
-void OPPROTO op_sarl_T2_0(void)
+OP(sarl_T2_0)
 {
     T2 = (int32_t)T2 >> 31;
 }
 
-void OPPROTO op_rorl_T2_im(void)
+OP(rorl_T2_im)
 {
     int shift;
     shift = PARAM1;
     T2 = ((uint32_t)T2 >> shift) | (T2 << (32 - shift));
 }
 
-void OPPROTO op_rrxl_T2(void)
+OP(rrxl_T2)
 {
     T2 = ((uint32_t)T2 >> 1) | ((uint32_t)env->CF << 31);
 }
 
 /* T1 based, use T0 as shift count */
 
-void OPPROTO op_shll_T1_T0(void)
+OP(shll_T1_T0)
 {
     int shift;
     shift = T0 & 0xff;
@@ -594,7 +599,7 @@ void OPPROTO op_shll_T1_T0(void)
     FORCE_RET();
 }
 
-void OPPROTO op_shrl_T1_T0(void)
+OP(shrl_T1_T0)
 {
     int shift;
     shift = T0 & 0xff;
@@ -605,7 +610,7 @@ void OPPROTO op_shrl_T1_T0(void)
     FORCE_RET();
 }
 
-void OPPROTO op_sarl_T1_T0(void)
+OP(sarl_T1_T0)
 {
     int shift;
     shift = T0 & 0xff;
@@ -614,7 +619,7 @@ void OPPROTO op_sarl_T1_T0(void)
     T1 = (int32_t)T1 >> shift;
 }
 
-void OPPROTO op_rorl_T1_T0(void)
+OP(rorl_T1_T0)
 {
     int shift;
     shift = T0 & 0x1f;
@@ -626,7 +631,7 @@ void OPPROTO op_rorl_T1_T0(void)
 
 /* T1 based, use T0 as shift count and compute CF */
 
-void OPPROTO op_shll_T1_T0_cc(void)
+OP(shll_T1_T0_cc)
 {
     int shift;
     shift = T0 & 0xff;
@@ -643,7 +648,7 @@ void OPPROTO op_shll_T1_T0_cc(void)
     FORCE_RET();
 }
 
-void OPPROTO op_shrl_T1_T0_cc(void)
+OP(shrl_T1_T0_cc)
 {
     int shift;
     shift = T0 & 0xff;
@@ -660,7 +665,7 @@ void OPPROTO op_shrl_T1_T0_cc(void)
     FORCE_RET();
 }
 
-void OPPROTO op_sarl_T1_T0_cc(void)
+OP(sarl_T1_T0_cc)
 {
     int shift;
     shift = T0 & 0xff;
@@ -674,7 +679,7 @@ void OPPROTO op_sarl_T1_T0_cc(void)
     FORCE_RET();
 }
 
-void OPPROTO op_rorl_T1_T0_cc(void)
+OP(rorl_T1_T0_cc)
 {
     int shift1, shift;
     shift1 = T0 & 0xff;
@@ -690,7 +695,7 @@ void OPPROTO op_rorl_T1_T0_cc(void)
 }
 
 /* misc */
-void OPPROTO op_clz_T0(void)
+OP(clz_T0)
 {
     int count;
     for (count = 32; T0 > 0; count--)
@@ -699,38 +704,38 @@ void OPPROTO op_clz_T0(void)
     FORCE_RET();
 }
 
-void OPPROTO op_sarl_T0_im(void)
+OP(sarl_T0_im)
 {
     T0 = (int32_t)T0 >> PARAM1;
 }
 
 /* Sign/zero extend */
-void OPPROTO op_sxth_T0(void)
+OP(sxth_T0)
 {
   T0 = (int16_t)T0;
 }
 
-void OPPROTO op_sxth_T1(void)
+OP(sxth_T1)
 {
   T1 = (int16_t)T1;
 }
 
-void OPPROTO op_sxtb_T1(void)
+OP(sxtb_T1)
 {
     T1 = (int8_t)T1;
 }
 
-void OPPROTO op_uxtb_T1(void)
+OP(uxtb_T1)
 {
     T1 = (uint8_t)T1;
 }
 
-void OPPROTO op_uxth_T1(void)
+OP(uxth_T1)
 {
     T1 = (uint16_t)T1;
 }
 
-void OPPROTO op_sxtb16_T1(void)
+OP(sxtb16_T1)
 {
     uint32_t res;
     res = (uint16_t)(int8_t)T1;
@@ -738,7 +743,7 @@ void OPPROTO op_sxtb16_T1(void)
     T1 = res;
 }
 
-void OPPROTO op_uxtb16_T1(void)
+OP(uxtb16_T1)
 {
     uint32_t res;
     res = (uint16_t)(uint8_t)T1;
@@ -748,7 +753,7 @@ void OPPROTO op_uxtb16_T1(void)
 
 #define SIGNBIT (uint32_t)0x80000000
 /* saturating arithmetic  */
-void OPPROTO op_addl_T0_T1_setq(void)
+OP(addl_T0_T1_setq)
 {
   uint32_t res;
 
@@ -760,7 +765,7 @@ void OPPROTO op_addl_T0_T1_setq(void)
   FORCE_RET();
 }
 
-void OPPROTO op_addl_T0_T1_saturate(void)
+OP(addl_T0_T1_saturate)
 {
   uint32_t res;
 
@@ -778,7 +783,7 @@ void OPPROTO op_addl_T0_T1_saturate(void)
   FORCE_RET();
 }
 
-void OPPROTO op_subl_T0_T1_saturate(void)
+OP(subl_T0_T1_saturate)
 {
   uint32_t res;
 
@@ -796,7 +801,7 @@ void OPPROTO op_subl_T0_T1_saturate(void)
   FORCE_RET();
 }
 
-void OPPROTO op_double_T1_saturate(void)
+OP(double_T1_saturate)
 {
   int32_t val;
 
@@ -814,7 +819,7 @@ void OPPROTO op_double_T1_saturate(void)
 }
 
 /* thumb shift by immediate */
-void OPPROTO op_shll_T0_im_thumb(void)
+OP(shll_T0_im_thumb)
 {
     int shift;
     shift = PARAM1;
@@ -826,7 +831,7 @@ void OPPROTO op_shll_T0_im_thumb(void)
     FORCE_RET();
 }
 
-void OPPROTO op_shrl_T0_im_thumb(void)
+OP(shrl_T0_im_thumb)
 {
     int shift;
 
@@ -842,7 +847,7 @@ void OPPROTO op_shrl_T0_im_thumb(void)
     FORCE_RET();
 }
 
-void OPPROTO op_sarl_T0_im_thumb(void)
+OP(sarl_T0_im_thumb)
 {
     int shift;
 
@@ -860,32 +865,32 @@ void OPPROTO op_sarl_T0_im_thumb(void)
 
 /* exceptions */
 
-void OPPROTO op_swi(void)
+OP(swi)
 {
     env->exception_index = EXCP_SWI;
     cpu_loop_exit();
 }
 
-void OPPROTO op_undef_insn(void)
+OP(undef_insn)
 {
     env->exception_index = EXCP_UDEF;
     cpu_loop_exit();
 }
 
-void OPPROTO op_debug(void)
+OP(debug)
 {
     env->exception_index = EXCP_DEBUG;
     cpu_loop_exit();
 }
 
-void OPPROTO op_wfi(void)
+OP(wfi)
 {
     env->exception_index = EXCP_HLT;
     env->halted = 1;
     cpu_loop_exit();
 }
 
-void OPPROTO op_bkpt(void)
+OP(bkpt)
 {
     env->exception_index = EXCP_BKPT;
     cpu_loop_exit();
@@ -895,7 +900,7 @@ void OPPROTO op_bkpt(void)
    Single precition routines have a "s" suffix, double precision a
    "d" suffix.  */
 
-#define VFP_OP(name, p) void OPPROTO op_vfp_##name##p(void)
+#define VFP_OP(name, p) OP(vfp_##name##p)
 
 #define VFP_BINOP(name) \
 VFP_OP(name, s)             \
@@ -1087,44 +1092,44 @@ VFP_OP(setreg_F0, s)
   *(float32 *)((char *) env + PARAM1) = FT0s;
 }
 
-void OPPROTO op_vfp_movl_T0_fpscr(void)
+OP(vfp_movl_T0_fpscr)
 {
     do_vfp_get_fpscr ();
 }
 
-void OPPROTO op_vfp_movl_T0_fpscr_flags(void)
+OP(vfp_movl_T0_fpscr_flags)
 {
     T0 = env->vfp.xregs[ARM_VFP_FPSCR] & (0xf << 28);
 }
 
-void OPPROTO op_vfp_movl_fpscr_T0(void)
+OP(vfp_movl_fpscr_T0)
 {
     do_vfp_set_fpscr();
 }
 
-void OPPROTO op_vfp_movl_T0_xreg(void)
+OP(vfp_movl_T0_xreg)
 {
     T0 = env->vfp.xregs[PARAM1];
 }
 
-void OPPROTO op_vfp_movl_xreg_T0(void)
+OP(vfp_movl_xreg_T0)
 {
     env->vfp.xregs[PARAM1] = T0;
 }
 
 /* Move between FT0s to T0  */
-void OPPROTO op_vfp_mrs(void)
+OP(vfp_mrs)
 {
     T0 = vfp_stoi(FT0s);
 }
 
-void OPPROTO op_vfp_msr(void)
+OP(vfp_msr)
 {
     FT0s = vfp_itos(T0);
 }
 
 /* Move between FT0d and {T0,T1} */
-void OPPROTO op_vfp_mrrd(void)
+OP(vfp_mrrd)
 {
     CPU_DoubleU u;
     
@@ -1133,7 +1138,7 @@ void OPPROTO op_vfp_mrrd(void)
     T1 = u.l.upper;
 }
 
-void OPPROTO op_vfp_mdrr(void)
+OP(vfp_mdrr)
 {
     CPU_DoubleU u;
     
@@ -1143,25 +1148,25 @@ void OPPROTO op_vfp_mdrr(void)
 }
 
 /* Copy the most significant bit to T0 to all bits of T1.  */
-void OPPROTO op_signbit_T1_T0(void)
+OP(signbit_T1_T0)
 {
     T1 = (int32_t)T0 >> 31;
 }
 
-void OPPROTO op_movl_cp15_T0(void)
+OP(movl_cp15_T0)
 {
     helper_set_cp15(env, PARAM1, T0);
     FORCE_RET();
 }
 
-void OPPROTO op_movl_T0_cp15(void)
+OP(movl_T0_cp15)
 {
     T0 = helper_get_cp15(env, PARAM1);
     FORCE_RET();
 }
 
 /* Access to user mode registers from privileged modes.  */
-void OPPROTO op_movl_T0_user(void)
+OP(movl_T0_user)
 {
     int regno = PARAM1;
     if (regno == 13) {
@@ -1177,7 +1182,7 @@ void OPPROTO op_movl_T0_user(void)
 }
 
 
-void OPPROTO op_movl_user_T0(void)
+OP(movl_user_T0)
 {
     int regno = PARAM1;
     if (regno == 13) {
@@ -1192,12 +1197,12 @@ void OPPROTO op_movl_user_T0(void)
     FORCE_RET();
 }
 
-void OPPROTO op_movl_T2_T0(void)
+OP(movl_T2_T0)
 {
     T2 = T0;
 }
 
-void OPPROTO op_movl_T0_T2(void)
+OP(movl_T0_T2)
 {
     T0 = T2;
 }

@@ -191,7 +191,8 @@ extern int printf(const char *, ...);
 #endif
 
 /* force GCC to generate only one epilog at the end of the function */
-#define FORCE_RET() __asm__ __volatile__("" : : : "memory");
+//#define FORCE_RET() __asm__ __volatile__("" : : : "memory");
+#define FORCE_RET()
 
 #ifndef OPPROTO
 #define OPPROTO
@@ -227,9 +228,9 @@ static int __op_param1, __op_param2, __op_param3;
 #else
 extern int __op_param1, __op_param2, __op_param3;
 #endif
-#define PARAM1 ((long)(&__op_param1))
-#define PARAM2 ((long)(&__op_param2))
-#define PARAM3 ((long)(&__op_param3))
+#define PARAM1 ((long)(__op_param1))
+#define PARAM2 ((long)(__op_param2))
+#define PARAM3 ((long)(__op_param3))
 #endif /* !defined(__alpha__) */
 
 extern int __op_jmp0, __op_jmp1, __op_jmp2, __op_jmp3;
@@ -242,7 +243,8 @@ extern int __op_jmp0, __op_jmp1, __op_jmp2, __op_jmp3;
 
 #ifdef __i386__
 #define EXIT_TB() asm volatile ("ret")
-#define GOTO_LABEL_PARAM(n) asm volatile ("jmp " ASM_NAME(__op_gen_label) #n)
+//#define GOTO_LABEL_PARAM(n) asm volatile ("jmp " ASM_NAME(__op_gen_label) #n)
+#define GOTO_LABEL_PARAM(n) nextIns();
 #endif
 #ifdef __x86_64__
 #define EXIT_TB() asm volatile ("ret")
