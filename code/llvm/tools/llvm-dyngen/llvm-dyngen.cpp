@@ -163,24 +163,6 @@ int load_object_llvm(const char *filename)
       std::cout << *f;
     }
   }
-
-// 	ValueSymbolTable& symtab2 = ops->getValueSymbolTable();
-
-// 	for (ValueSymbolTable::iterator abc = symtab2.begin(), e = symtab2.end(); abc != e; ++abc) {
-// 	  Value* v = (*abc).getValue();
-// 	  if (GlobalVariable *glob = dyn_cast<GlobalVariable>((*abc).getValue()) ) {
-// 	    if (glob->isDeclaration()) {
-// 	    std::cout << *v->getType() << " ";
-// 	    std::cout << v->getName() << "\n";
-// 	    }
-// 	  } else if (Function *func = dyn_cast<Function>((*abc).getValue())) {
-// 	    if (func->isDeclaration()) {
-// 	    std::cout << *v->getType() << " ";
-// 	    std::cout << v->getName() << "\n";
-// 	    }
-// 	  }
-// 	}
-  
 }
 
 // #endif /* CONFIG_FORMAT_LLVM */
@@ -262,11 +244,53 @@ void gen_code_void_op(const char *name,
       fprintf(outfile, "args[%d] = zero;\n", i);
     }
     // add call to micro op
-    fprintf(outfile, "    currCall = new CallInst(ops2[*opc_ptr], (Value **)&args, %d, \"\", currBB);\n", MAX_ARGS);
+    fprintf(outfile, "    currCall = new CallInst(M->getFunction(\"%s\"), (Value **)&args, %d, \"\", currBB);\n", name, MAX_ARGS);
+    fprintf(outfile, "     InlineFunction(currCall);");
 }
 
 
 void gen_code_int_op();
+
+// add external declarations and the necessary code to resolve them
+void add_decls(FILE *outfile)
+{
+    for (Module::global_iterator i = ops->global_begin(), e = ops->global_end(); i != e; ++i) {
+      GlobalVariable *g = (GlobalVariable *) i;
+      
+      if (g->isDeclaration()) {
+	fprintf(outfile, "extern char %s;\n", g->getName().c_str());
+      }
+    }
+
+    for (Module::iterator i = ops->begin(), e = ops->end(); i != e; ++i) {
+      Function *f = (Function *) i;
+
+      if (f->isDeclaration()) {
+	  fprintf(outfile, "extern char %s;\n", f->getName().c_str());
+      }
+    }
+}
+
+void add_resolv(FILE *outfile)
+{
+    for (Module::global_iterator i = ops->global_begin(), e = ops->global_end(); i != e; ++i) {
+      GlobalVariable *g = (GlobalVariable *) i;
+      
+      if (g->isDeclaration()) {
+	  fprintf(outfile, "EE->addGlobalMapping(M->getNamedGlobal(\"%s\"), &%s);\n",
+                  g->getName().c_str(), g->getName().c_str());
+      }
+    }
+
+    for (Module::iterator i = ops->begin(), e = ops->end(); i != e; ++i) {
+      Function *f = (Function *) i;
+
+      if (f->isDeclaration()) {
+	  fprintf(outfile, "EE->addGlobalMapping(M->getFunction(\"%s\"), &%s);\n",
+                  f->getName().c_str(), f->getName().c_str());
+      }
+    }
+}
 
 
 /* generate op code */
@@ -448,14 +472,34 @@ fprintf(outfile,
 "#define MAX_ARGS 3\n"
 "using namespace llvm;\n"
 "ExecutionEngine *EE;\n"
-"Module *M = 0;\n"
-"Function *ops2[100];\n"
+"Module *M;\n"
+"Function *ops2[100];\n");
+
+add_decls(outfile);
+
+fprintf(outfile,
 "void init_jit()\n"
 "{\n"
+"  MemoryBuffer *buf = MemoryBuffer::getFile(\"op.o\", 4);\n"
+"\n"
+"  if (buf == NULL) {\n"
+"    std::cout << \"micro op bitcode file not found\\n\";\n"
+"    //exit(-1);\n"
+"  }\n"
+"\n"
+"  M = ParseBitcodeFile(buf, NULL);\n"
+"\n"
+"  if (M == NULL) {\n"
+"    std::cout << \"micro op bitcode file could not be read\\n\";\n"
+"    //exit(-1);\n"
+"  }\n"
 "ExistingModuleProvider* MP = new ExistingModuleProvider(M);\n"
 "EE = ExecutionEngine::create(MP, false);\n"
+	);
+ add_resolv(outfile);
+	fprintf(outfile,
+"std::cout << \"JIT initialized\\n\";\n"
 "}\n"
-
 	);
 
 
@@ -477,13 +521,15 @@ fprintf(outfile,
 
 // load op.bc, create container module
 fprintf(outfile,
+"std::cout << \"dyngen_code_llvm!!!\";\n"
+"  if (M == 0) init_jit();\n"
 "  Function *tb =\n"
 "    cast<Function>(M->getOrInsertFunction(\"tb\", Type::VoidTy, (Type *)0));\n"
 "  BasicBlock *BB = new BasicBlock(\"EntryBlock\", tb);  \n"
 "    BasicBlock *currBB = BB;\n"
 "    CallInst *currCall;\n"
 "    Value *zero = ConstantInt::get(Type::Int32Ty, 0);\n"
-"std::cout << \"dyngen_code_llvm!!!\";\n");
+);
 
 
 	/* Generate prologue, if needed. */ 
@@ -528,10 +574,17 @@ fprintf(outfile,
 );
 
 /* generate some code patching */ 
+ fprintf(outfile, "new ReturnInst(currBB);"); 
+    fprintf(outfile, "std::cout << *tb;\n"
+"void *code = EE->getPointerToFunction(tb);\n"
+"if (code == NULL) {std::cout << \"compilation failed\\n\"; } else {std::cout << \"compilation successful\\n\"; }"
+"memcpy(gen_code_buf, code, 10*1024);\n"
+);
     /* flush instruction cache */
     fprintf(outfile, "flush_icache_range((unsigned long)gen_code_buf, (unsigned long)gen_code_ptr);\n");
 
-    fprintf(outfile, "return gen_code_ptr -  gen_code_buf;\n");
+    //fprintf(outfile, "return gen_code_ptr -  gen_code_buf;\n");
+    fprintf(outfile, "return 10*1024;\n");
     fprintf(outfile, "}\n\n");
 
     }
