@@ -8,6 +8,6 @@ LEVEL=..
 #
 # List all of the subdirectories that we will compile.
 #
-DIRS=Prototype
+DIRS=Prototype llvm-dyngen
 
 include $(LEVEL)/Makefile.common

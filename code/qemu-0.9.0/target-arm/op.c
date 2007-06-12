@@ -20,10 +20,12 @@
  */
 #include "exec.h"
 
-void nextIns(void) {
-}
+extern void __op_gen_label1();
+extern void __op_gen_label2();
+extern void __op_gen_label3();
 
-#define OP(name) void OPPROTO op_##name (long __op_param1, long __op_param2, long __op_param3)
+#define OP_(name) void OPPROTO op_##name (long __op_param1, long __op_param2, long __op_param3)
+#define OP(name) OP_(name)
 
 #define REGNAME r0
 #define REG (env->regs[0])
@@ -179,7 +181,7 @@ OP(adcl_T0_T1_cc)
 
 #define OPSUB(sub, sbc, res, T0, T1)            \
                                                 \
-OP(sub)                                         \
+OP(sub ## l_T0_T1)                              \
 {                                               \
     res = T0 - T1;                              \
 }                                               \

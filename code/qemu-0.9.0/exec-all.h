@@ -273,7 +273,7 @@ static inline void tb_set_jmp_target(TranslationBlock *tb,
 static inline void tb_set_jmp_target(TranslationBlock *tb, 
                                      int n, unsigned long addr)
 {
-    tb->tb_next[n] = addr;
+  /* tb->tb_next[n] = addr; */
 }
 
 #endif
@@ -342,15 +342,7 @@ do {\
 
 /* jump to next block operations (more portable code, does not need
    cache flushing, but slower because of indirect jump) */
-#define GOTO_TB(opname, tbparam, n)\
-do {\
-    static void __attribute__((unused)) *dummy ## n = &&dummy_label ## n;\
-    static void __attribute__((unused)) *__op_label ## n \
-        __asm__(ASM_OP_LABEL_NAME(n, opname)) = &&label ## n;\
-    goto *(void *)(((TranslationBlock *)tbparam)->tb_next[n]);\
-label ## n: ;\
-dummy_label ## n: ;\
-} while (0)
+#define GOTO_TB(opname, tbparam, n)
 
 #endif
 

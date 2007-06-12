@@ -102,7 +102,7 @@ int main() {
   std::cout << "op was executed\n";
 
   if (T0 == 0xDEADBEEF) {
-    std::cout << "w00t!\n";
+    std::cout << "T0 contains correct value\n";
   }
 
   // move immediate
