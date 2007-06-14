@@ -35,7 +35,7 @@ extern int dyngen_code(uint8_t *gen_code_buf,
                        const uint16_t *opc_buf, const uint32_t *opparam_buf, const long *gen_labels);
 
 enum {
-#define DEF(s, n, copy_size) INDEX_op_ ## s,
+#define DEF(s, n) INDEX_op_ ## s,
 #include "opc.h"
 #undef DEF
     NB_OPS,
@@ -61,19 +61,19 @@ int code_copy_enabled = 1;
 
 #ifdef DEBUG_DISAS
 static const char *op_str[] = {
-#define DEF(s, n, copy_size) #s,
+#define DEF(s, n) #s,
 #include "opc.h"
 #undef DEF
 };
 
 static uint8_t op_nb_args[] = {
-#define DEF(s, n, copy_size) n,
+#define DEF(s, n) n,
 #include "opc.h"
 #undef DEF
 };
 
 static const unsigned short opc_copy_size[] = {
-#define DEF(s, n, copy_size) copy_size,
+#define DEF(s, n) 0,
 #include "opc.h"
 #undef DEF
 };

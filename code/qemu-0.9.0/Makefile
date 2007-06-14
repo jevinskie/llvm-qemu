@@ -40,10 +40,10 @@ subdir-%: dyngen$(EXESUF)
 recurse-all: $(patsubst %,subdir-%, $(TARGET_DIRS))
 
 qemu-img$(EXESUF): qemu-img.c cutils.c block.c block-raw.c block-cow.c block-qcow.c aes.c block-vmdk.c block-cloop.c block-dmg.c block-bochs.c block-vpc.c block-vvfat.c block-qcow2.c
-	$(CC) -DQEMU_TOOL $(CFLAGS) $(CPPFLAGS) $(BASE_CFLAGS) $(LDFLAGS) $(BASE_LDFLAGS) -o $@ $^ -lz $(LIBS)
+	$(CC) -DQEMU_TOOL $(CFLAGS) $(CPPFLAGS) $(BASE_CFLAGS) $(LDFLAGS) $(BASE_LDFLAGS) -o $@ $^ -lz -lpthread $(LIBS)
 
-dyngen$(EXESUF): dyngen.c
-	$(HOST_CC) $(CFLAGS) $(CPPFLAGS) $(BASE_CFLAGS) -o $@ $^
+dyngen$(EXESUF): llvm-dyngen.cpp
+	g++ $(LLVM_CXXFLAGS) -o $@ $^ $(LLVM_LIBS) $(LLVM_LDFLAGS)
 
 clean:
 # avoid old build problems by removing potentially incorrect old files

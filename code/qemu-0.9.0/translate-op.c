@@ -26,7 +26,7 @@
 #include "config.h"
 
 enum {
-#define DEF(s, n, copy_size) INDEX_op_ ## s,
+#define DEF(s, n) INDEX_op_ ## s,
 #include "opc.h"
 #undef DEF
     NB_OPS,

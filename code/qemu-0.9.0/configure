@@ -787,6 +787,10 @@ fi
 
 echo "#define CONFIG_UNAME_RELEASE \"$uname_release\"" >> $config_h
 
+echo LLVM_CXXFLAGS=`llvm-config --cxxflags` >> $config_mak
+echo LLVM_LDFLAGS=`llvm-config --ldflags` >> $config_mak
+echo LLVM_LIBS=`llvm-config --libs` >> $config_mak
+
 for target in $target_list; do
 target_dir="$target"
 config_mak=$target_dir/config.mak
@@ -972,6 +976,10 @@ if test "$cocoa" = "yes" ; then
     echo "#define CONFIG_COCOA 1" >> $config_h
     echo "CONFIG_COCOA=yes" >> $config_mak
 fi
+
+echo LLVM_CXXFLAGS=`llvm-config --cxxflags` >> $config_mak
+echo LLVM_LDFLAGS=`llvm-config --ldflags` >> $config_mak
+echo LLVM_LIBS=`llvm-config --libs` >> $config_mak
 
 done # for target in $targets
 

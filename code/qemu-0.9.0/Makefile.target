@@ -228,7 +228,7 @@ OBJS+= libqemu.a
 
 # cpu emulator library
 LIBOBJS=exec.o kqemu.o translate-op.o translate-all.o cpu-exec.o\
-        translate.o op.o 
+        translate.o 
 ifdef CONFIG_SOFTFLOAT
 LIBOBJS+=fpu/softfloat.o
 else
@@ -494,6 +494,7 @@ translate.o: translate.c gen-op.h opc.h cpu.h
 translate-all.o: translate-all.c opc.h cpu.h
 
 translate-op.o: translate-all.c op.h opc.h cpu.h
+	g++ -I. -I.. $(LLVM_CXXFLAGS) -o $@ $^ $(LLVM_LIBS) $(LLVM_LDFLAGS)
 
 op.h: op.o $(DYNGEN)
 	$(DYNGEN) -o $@ $<
@@ -505,7 +506,7 @@ gen-op.h: op.o $(DYNGEN)
 	$(DYNGEN) -g -o $@ $<
 
 op.o: op.c
-	$(CC) $(OP_CFLAGS) $(CPPFLAGS) -c -o $@ $<
+	llvm-gcc -emit-llvm $(OP_CFLAGS) $(CPPFLAGS) -c -o $@ $<
 
 # HELPER_CFLAGS is used for all the code compiled with static register
 # variables
