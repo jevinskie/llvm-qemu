@@ -71,10 +71,10 @@ extern FILE *logfile;
 extern int loglevel;
 
 enum {
-#define DEF(s, n, copy_size) INDEX_op_ ## s,
+#define DEF(s, n) INDEX_op_ ## s,
 #include "opc.h"
 #undef DEF
-    NB_OPS,
+    NB_OPS
 };
 
 #include "gen-op.h"

@@ -29,7 +29,7 @@ enum {
 #define DEF(s, n) INDEX_op_ ## s,
 #include "opc.h"
 #undef DEF
-    NB_OPS,
+    NB_OPS
 };
 
 #include "dyngen.h"

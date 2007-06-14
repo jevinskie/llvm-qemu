@@ -494,7 +494,7 @@ translate.o: translate.c gen-op.h opc.h cpu.h
 translate-all.o: translate-all.c opc.h cpu.h
 
 translate-op.o: translate-all.c op.h opc.h cpu.h
-	g++ -I. -I.. $(LLVM_CXXFLAGS) -o $@ $^ $(LLVM_LIBS) $(LLVM_LDFLAGS)
+	g++ -I. -I.. $(LLVM_CXXFLAGS) -fno-exceptions -pedantic -Wall -W -Wwrite-strings -Wno-long-long -Wunused -Wno-unused-parameter -c ../translate-op.cpp -o translate-op.o
 
 op.h: op.o $(DYNGEN)
 	$(DYNGEN) -o $@ $<
