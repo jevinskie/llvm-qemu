@@ -300,11 +300,97 @@ void gen_code_void_op(const char *name,
     }
     // add call to micro op
     fprintf(outfile, "    currCall = new CallInst(M->getFunction(\"%s\"), (Value **)&args, %d, \"\", currBB);\n", name, MAX_ARGS);
-    fprintf(outfile, "    InlineFunction(currCall);");
+    if (strcmp(name, "op_exit_tb") == 0) {
+      fprintf(outfile, "    new ReturnInst(currBB);\n"
+	      "     currBB = new BasicBlock(\"\", tb);\n"
+	      );
+      
+    }
+    //fprintf(outfile, "    InlineFunction(currCall);");
 }
 
 
-void gen_code_int_op();
+// generate code for micro ops which include jumps to labels (e.g. using GOTO_LABEL_PARAM)
+// the integer return value is the number of the parameter which contains the label number
+void gen_code_int_op(const char *name,
+                     FILE *outfile, Function *op)
+{
+    // for now don't handle parameters to int ops
+    // at least for the ARM target there are no micro ops which use both __op_param
+    // and __op_gen_label
+
+    uint8_t args_present[MAX_ARGS];
+    int nb_args, i;
+
+    for(i = 0;i < MAX_ARGS; i++)
+        args_present[i] = 0;
+
+    for (i = 1; i <= MAX_ARGS; i++) {
+      char *funcName = (char *) malloc(20);
+      sprintf(funcName, "__op_gen_label%d", i);
+      Function *f = ops->getFunction(std::string(funcName));
+      if (f != NULL) {
+	  for (Function::use_iterator j = f->use_begin(), e = f->use_end(); j != e; ++j) {
+	      if (Instruction *inst = dyn_cast<Instruction>(*j)) {
+		if (inst->getParent()->getParent() == op) {
+		  args_present[i - 1] = 1;
+		}
+	      }
+	  }
+      } else {
+	  std::cout << "symbol not found\n";
+      }
+    }
+
+    nb_args = 0;
+    while (nb_args < MAX_ARGS && args_present[nb_args])
+        nb_args++;
+
+    for(i = nb_args; i < MAX_ARGS; i++) {
+        if (args_present[i])
+            error("inconsistent argument numbering in %s", name);
+    }
+
+    // add local variables for op parameters
+    if (nb_args > 0) {
+        fprintf(outfile, "    long ");
+        for(i = 0; i < nb_args; i++) {
+	    if (i != 0)
+	        fprintf(outfile, ", ");
+	    fprintf(outfile, "param%d", i + 1);
+        }
+        fprintf(outfile, ";\n");
+    }
+
+    // load parameres in variables
+    for(i = 0; i < nb_args; i++) {
+        fprintf(outfile, "    param%d = *opparam_ptr++;\n", i + 1);
+    }
+
+    fprintf(outfile, "Value * args[MAX_ARGS];\n");
+    for (i = 0; i < MAX_ARGS; i++) {
+      fprintf(outfile, "args[%d] = zero;\n", i);
+    }
+    
+    // add call to micro op
+    fprintf(outfile, "    currCall = new CallInst(M->getFunction(\"%s\"), (Value **)&args, %d, \"\", currBB);\n", name, MAX_ARGS);
+    fprintf(outfile, "    newBB = new BasicBlock(\"\", tb);\n");
+    fprintf(outfile, "    currSwitch = new SwitchInst(currCall, newBB, 1, currBB );\n");
+    fprintf(outfile, "    currBB = newBB;\n");
+
+    // register branch destinations
+    for(i = 0; i < MAX_ARGS; i++) {
+        if (args_present[i]) {
+	  fprintf(outfile,
+		  "    { struct label *tmp = (struct label *) malloc(sizeof(struct label));\n"
+		  "    tmp->inst = currSwitch;\n"
+		  "    tmp->param = %d;\n"
+		  "    if (labels[gen_labels[param%d]]) std::cout << \"label already set!\";\n"
+		  "    labels[gen_labels[param%d]] = tmp; }\n", i + 1, i + 1, i + 1);
+        }
+    }
+    
+}
 
 // add external declarations and the necessary code to resolve them
 void add_decls(FILE *outfile)
@@ -312,7 +398,7 @@ void add_decls(FILE *outfile)
     for (Module::global_iterator i = ops->global_begin(), e = ops->global_end(); i != e; ++i) {
       GlobalVariable *g = (GlobalVariable *) i;
       
-      if (g->isDeclaration()) {
+      if (g->isDeclaration() || true) {
 	fprintf(outfile, "extern char %s;\n", g->getName().c_str());
       }
     }
@@ -331,7 +417,7 @@ void add_resolv(FILE *outfile)
     for (Module::global_iterator i = ops->global_begin(), e = ops->global_end(); i != e; ++i) {
       GlobalVariable *g = (GlobalVariable *) i;
       
-      if (g->isDeclaration()) {
+      if (g->isDeclaration() || true) {
 	  fprintf(outfile, "EE->addGlobalMapping(M->getNamedGlobal(\"%s\"), &%s);\n",
                   g->getName().c_str(), g->getName().c_str());
       }
@@ -364,7 +450,14 @@ void gen_code(const char *name,
         /* output C code */
         fprintf(outfile, "case INDEX_%s: {\n", name);
 
-	gen_code_void_op(name, outfile, op);
+	const Type *retType = op->getReturnType();
+	if (retType == Type::VoidTy) {
+	  gen_code_void_op(name, outfile, op);
+	} else if (retType == Type::Int32Ty) {
+	  gen_code_int_op(name, outfile, op);
+	} else {
+	  error("found micro op with unknown return type\n");
+	}
 
         //fprintf(outfile, "    extern void %s();\n", name);
 
@@ -528,7 +621,11 @@ fprintf(outfile,
 "using namespace llvm;\n"
 "ExecutionEngine *EE;\n"
 "Module *M;\n"
-"Function *ops2[100];\n");
+"Function *ops2[100];\n"
+"struct label {\n"
+"    SwitchInst *inst;\n"
+"    int param;\n"
+"};\n");
 
 add_decls(outfile);
 
@@ -553,37 +650,41 @@ fprintf(outfile,
 	);
  add_resolv(outfile);
 	fprintf(outfile,
-"std::cout << \"JIT initialized\\n\";\n"
+		//"std::cout << \"JIT initialized\\n\";\n"
 "}\n"
 	);
 
 
 fprintf(outfile,
-"extern \"C\" int dyngen_code(uint8_t *gen_code_buf,\n"
-"                uint16_t *label_offsets, uint16_t *jmp_offsets,\n"
-"                const uint16_t *opc_buf, const uint32_t *opparam_buf, const long *gen_labels)\n"
+"extern \"C\" void (*dyngen_code(\n"
+"                const uint16_t *opc_buf, const uint32_t *opparam_buf, const long *gen_labels))()\n"
 "{\n"
-"    uint8_t *gen_code_ptr;\n"
 "    const uint16_t *opc_ptr;\n"
 "    const uint32_t *opparam_ptr;\n");
 
 
 fprintf(outfile,
 "\n"
-"    gen_code_ptr = gen_code_buf;\n"
 "    opc_ptr = opc_buf;\n"
 "    opparam_ptr = opparam_buf;\n");
 
 // load op.bc, create container module
 fprintf(outfile,
-"std::cout << \"dyngen_code_llvm!!!\";\n"
 "  if (M == 0) init_jit();\n"
-"  Function *tb =\n"
-"    cast<Function>(M->getOrInsertFunction(\"tb\", Type::VoidTy, (Type *)0));\n"
+	"  Function *tb =\n"
+	"    cast<Function>(M->getOrInsertFunction(\"\", Type::VoidTy, (Type *)0));\n"
+// "  const std::vector<const Type *>& empty = std::vector<const Type *>();\n"
+// "  const Type * resultType = Type::VoidTy;\n"
+// "  FunctionType *funcType = FunctionType::get((const Type *) Type::VoidTy, empty, false, (const ParamAttrsList *)0);\n"
+// "  Function *tb = new Function(funcType, GlobalValue::ExternalLinkage);\n"
 "  BasicBlock *BB = new BasicBlock(\"EntryBlock\", tb);  \n"
 "    BasicBlock *currBB = BB;\n"
 "    CallInst *currCall;\n"
+"    SwitchInst *currSwitch;\n"
+"    BasicBlock *newBB;\n"
 "    Value *zero = ConstantInt::get(Type::Int32Ty, 0);\n"
+"    struct label * labels[512];\n"
+"    for (int i = 0; i < 512; i++) labels[i] = 0;\n"
 );
 
 
@@ -592,6 +693,15 @@ fprintf(outfile,
 fprintf(outfile,
 "    for(;;) {\n");
 
+ fprintf(outfile,
+"        if (labels[opc_ptr - opc_buf]) {\n"
+"            struct label *tmp = labels[opc_ptr - opc_buf];\n"
+"            newBB = new BasicBlock(\"\", tb);\n"
+"            new BranchInst(newBB, currBB);\n"
+"            tmp->inst->addCase(ConstantInt::get(Type::Int32Ty, tmp->param), newBB);\n"
+"            currBB = newBB;\n"
+"        }\n");
+ 
 
 fprintf(outfile,
 "        switch(*opc_ptr++) {\n");
@@ -630,16 +740,16 @@ fprintf(outfile,
 
 /* generate some code patching */ 
  fprintf(outfile, "new ReturnInst(currBB);"); 
-    fprintf(outfile, "std::cout << *tb;\n"
+ fprintf(outfile, ""//"std::cout << *tb;\n"
 "void *code = EE->getPointerToFunction(tb);\n"
-"if (code == NULL) {std::cout << \"compilation failed\\n\"; } else {std::cout << \"compilation successful\\n\"; }"
-"memcpy(gen_code_buf, code, 10*1024);\n"
+	    //"if (code == NULL) {std::cout << \"compilation failed\\n\"; } else {std::cout << \"compilation successful\\n\"; }"
 );
     /* flush instruction cache */
-    fprintf(outfile, "flush_icache_range((unsigned long)gen_code_buf, (unsigned long)gen_code_ptr);\n");
+    // we can disable this since on x86 flush_icache_range has no effect anyways
+    //fprintf(outfile, "flush_icache_range((unsigned long)gen_code_buf, (unsigned long)gen_code_ptr);\n");
 
     //fprintf(outfile, "return gen_code_ptr -  gen_code_buf;\n");
-    fprintf(outfile, "return 10*1024;\n");
+    fprintf(outfile, "return (void (*)())code;\n");
     fprintf(outfile, "}\n\n");
 
     }

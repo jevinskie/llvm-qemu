@@ -173,7 +173,7 @@ typedef struct TranslationBlock {
 #define CF_FP_USED     0x0004 /* fp ops are used in the TB or in a chained TB */
 #define CF_SINGLE_INSN 0x0008 /* compile only a single instruction */
 
-    uint8_t *tc_ptr;    /* pointer to the translated code */
+    void (*tc_ptr)();    /* pointer to the translated code */
     /* next matching tb for physical address. */
     struct TranslationBlock *phys_hash_next; 
     /* first and second physical page containing code. The lower bit

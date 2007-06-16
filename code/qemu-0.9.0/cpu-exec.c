@@ -82,7 +82,7 @@ static TranslationBlock *tb_find_slow(target_ulong pc,
     int code_gen_size;
     unsigned int h;
     target_ulong phys_pc, phys_page1, phys_page2, virt_page2;
-    uint8_t *tc_ptr;
+    void (*tc_ptr)();
     
     spin_lock(&tb_lock);
 
@@ -636,7 +636,7 @@ int cpu_exec(CPUState *env1)
                 tc_ptr = tb->tc_ptr;
                 env->current_tb = tb;
                 /* execute the generated code */
-                gen_func = (void *)tc_ptr;
+                gen_func = tc_ptr;
 #if defined(__sparc__)
                 __asm__ __volatile__("call	%0\n\t"
                                      "mov	%%o7,%%i0"

@@ -30,9 +30,8 @@
 #include "exec-all.h"
 #include "disas.h"
 
-extern int dyngen_code(uint8_t *gen_code_buf,
-                       uint16_t *label_offsets, uint16_t *jmp_offsets,
-                       const uint16_t *opc_buf, const uint32_t *opparam_buf, const long *gen_labels);
+extern void (*dyngen_code(const uint16_t *opc_buf, const uint32_t *opparam_buf,
+		          const long *gen_labels))();
 
 enum {
 #define DEF(s, n) INDEX_op_ ## s,
@@ -141,8 +140,7 @@ static void dyngen_labels(long *gen_labels, int nb_gen_labels,
 int cpu_gen_code(CPUState *env, TranslationBlock *tb,
                  int max_code_size, int *gen_code_size_ptr)
 {
-    uint8_t *gen_code_buf;
-    int gen_code_size;
+    int gen_code_size = 0;
 
 #ifdef USE_CODE_COPY
     if (code_copy_enabled &&
@@ -157,21 +155,11 @@ int cpu_gen_code(CPUState *env, TranslationBlock *tb,
         /* generate machine code */
         tb->tb_next_offset[0] = 0xffff;
         tb->tb_next_offset[1] = 0xffff;
-        gen_code_buf = tb->tc_ptr;
-#ifdef USE_DIRECT_JUMP
-        /* the following two entries are optional (only used for string ops) */
-        tb->tb_jmp_offset[2] = 0xffff;
-        tb->tb_jmp_offset[3] = 0xffff;
-#endif
-        dyngen_labels(gen_labels, nb_gen_labels, gen_code_buf, gen_opc_buf);
 
-        gen_code_size = dyngen_code(gen_code_buf, tb->tb_next_offset,
-#ifdef USE_DIRECT_JUMP
-                                    tb->tb_jmp_offset,
-#else
-                                    NULL,
-#endif
-                                    gen_opc_buf, gen_opparam_buf, gen_labels);
+	/* do not compute label code offsets, leave them as offsets in gen_opc_buf */
+        /* dyngen_labels(gen_labels, nb_gen_labels, gen_code_buf, gen_opc_buf); */
+
+        tb->tc_ptr = dyngen_code(gen_opc_buf, gen_opparam_buf, gen_labels);
     }
     *gen_code_size_ptr = gen_code_size;
 #ifdef DEBUG_DISAS
