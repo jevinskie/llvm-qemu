@@ -154,15 +154,15 @@ int load_object_llvm(const char *filename)
     exit(-1);
   }
   
-  for (Module::global_iterator i = ops->global_begin(), e = ops->global_end(); i != e; ++i) {
-   std::cout << *i;
-  }
-  for (Module::iterator i = ops->begin(), e = ops->end(); i != e; ++i) {
-    Function *f = (Function *) i;
-    if (f->isDeclaration() && f->hasExternalLinkage()) {
-      std::cout << *f;
-    }
-  }
+//   for (Module::global_iterator i = ops->global_begin(), e = ops->global_end(); i != e; ++i) {
+//    std::cout << *i;
+//   }
+//   for (Module::iterator i = ops->begin(), e = ops->end(); i != e; ++i) {
+//     Function *f = (Function *) i;
+//     if (f->isDeclaration() && f->hasExternalLinkage()) {
+//       std::cout << *f;
+//     }
+//   }
 }
 
 // #endif /* CONFIG_FORMAT_LLVM */
@@ -181,6 +181,61 @@ void get_reloc_expr(char *name, int name_size, const char *sym_name)
 }
 
 #define MAX_ARGS 3
+
+int get_arg_count(const char *name, Function *op)
+{
+    uint8_t args_present[MAX_ARGS];
+    int nb_args, i, n;
+    const char *p;
+
+    for(i = 0;i < MAX_ARGS; i++)
+        args_present[i] = 0;
+
+    // compute the number of arguments by looking at
+    // the uses of the op parameters
+    for (Function::arg_iterator i = op->arg_begin(), e = op->arg_end(); i != e; ++i) {
+      const char *tmpArgName = i->getName().c_str();
+      char *argName = (char *) malloc(strlen(tmpArgName + 1));
+      strcpy(argName, tmpArgName);
+
+      if (strstart(argName, "__op_param", &p)) {
+	if (i->hasNUsesOrMore(1)) {
+	  n = strtoul(p, NULL, 10);
+	  if (n > MAX_ARGS)
+	    error("too many arguments in %s", name);
+	  args_present[n - 1] = 1;
+	}
+      }
+    }
+
+    for (i = 1; i <= MAX_ARGS; i++) {
+      char *funcName = (char *) malloc(20);
+      sprintf(funcName, "__op_gen_label%d", i);
+      Function *f = ops->getFunction(std::string(funcName));
+      if (f != NULL) {
+	  for (Function::use_iterator j = f->use_begin(), e = f->use_end(); j != e; ++j) {
+	      if (Instruction *inst = dyn_cast<Instruction>(*j)) {
+		if (inst->getParent()->getParent() == op) {
+		  args_present[i - 1] = 1;
+		}
+	      }
+	  }
+      } else {
+	  std::cout << "symbol not found\n";
+      }
+    }
+
+    nb_args = 0;
+    while (nb_args < MAX_ARGS && args_present[nb_args])
+        nb_args++;
+
+    for(i = nb_args; i < MAX_ARGS; i++) {
+        if (args_present[i])
+            error("inconsistent argument numbering in %s", name);
+    }
+
+    return nb_args;
+}
 
 // generate code for ops which return a void value
 void gen_code_void_op(const char *name,
@@ -245,7 +300,7 @@ void gen_code_void_op(const char *name,
     }
     // add call to micro op
     fprintf(outfile, "    currCall = new CallInst(M->getFunction(\"%s\"), (Value **)&args, %d, \"\", currBB);\n", name, MAX_ARGS);
-    fprintf(outfile, "     InlineFunction(currCall);");
+    fprintf(outfile, "    InlineFunction(currCall);");
 }
 
 
@@ -300,7 +355,7 @@ void gen_code(const char *name,
     // TODO calculate number of parameters, else dump_ops()
     // and all gen_* functions which require parameters won't work
     int nb_args, i;
-    nb_args = 3;
+    nb_args = get_arg_count(name, op);
 
     if (gen_switch == OUT_INDEX_OP) {
       fprintf(outfile, "DEF(%s, %d)\n", name + 3, nb_args);

@@ -311,7 +311,7 @@ endif
 all: $(PROGS)
 
 $(QEMU_USER): $(OBJS)
-	$(CC) $(LDFLAGS) $(BASE_LDFLAGS) -o $@ $^  $(LIBS)
+	g++ $(LDFLAGS) $(BASE_LDFLAGS) -o $@ $^  $(LIBS) $(LLVM_LIBS) $(LLVM_LDFLAGS) -ldl
 ifeq ($(ARCH),alpha)
 # Mark as 32 bit binary, i. e. it will be mapped into the low 31 bit of
 # the address space (31 bit so sign extending doesn't matter)

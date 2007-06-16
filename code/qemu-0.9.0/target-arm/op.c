@@ -20,12 +20,15 @@
  */
 #include "exec.h"
 
-extern void __op_gen_label1();
-extern void __op_gen_label2();
-extern void __op_gen_label3();
+void __op_gen_label1() {}
+void __op_gen_label2() {}
+void __op_gen_label3() {}
 
 #define OP_(name) void OPPROTO op_##name (long __op_param1, long __op_param2, long __op_param3)
 #define OP(name) OP_(name)
+
+#define INT_OP(name) int OPPROTO op_##name (long __op_param1, long __op_param2, long __op_param3)
+#define RETURN return 0;
 
 #define REGNAME r0
 #define REG (env->regs[0])
@@ -260,102 +263,102 @@ OP(logic_T1_cc)
 
 #define EIP (env->regs[15])
 
-OP(test_eq)
+INT_OP(test_eq)
 {
     if (env->NZF == 0)
         GOTO_LABEL_PARAM(1);;
-    FORCE_RET();
+    RETURN
 }
 
-OP(test_ne)
+INT_OP(test_ne)
 {
     if (env->NZF != 0)
         GOTO_LABEL_PARAM(1);;
-    FORCE_RET();
+    RETURN
 }
 
-OP(test_cs)
+INT_OP(test_cs)
 {
     if (env->CF != 0)
         GOTO_LABEL_PARAM(1);
-    FORCE_RET();
+    RETURN
 }
 
-OP(test_cc)
+INT_OP(test_cc)
 {
     if (env->CF == 0)
         GOTO_LABEL_PARAM(1);
-    FORCE_RET();
+    RETURN
 }
 
-OP(test_mi)
+INT_OP(test_mi)
 {
     if ((env->NZF & 0x80000000) != 0)
         GOTO_LABEL_PARAM(1);
-    FORCE_RET();
+    RETURN
 }
 
-OP(test_pl)
+INT_OP(test_pl)
 {
     if ((env->NZF & 0x80000000) == 0)
         GOTO_LABEL_PARAM(1);
-    FORCE_RET();
+    RETURN
 }
 
-OP(test_vs)
+INT_OP(test_vs)
 {
     if ((env->VF & 0x80000000) != 0)
         GOTO_LABEL_PARAM(1);
-    FORCE_RET();
+    RETURN
 }
 
-OP(test_vc)
+INT_OP(test_vc)
 {
     if ((env->VF & 0x80000000) == 0)
         GOTO_LABEL_PARAM(1);
-    FORCE_RET();
+    RETURN
 }
 
-OP(test_hi)
+INT_OP(test_hi)
 {
     if (env->CF != 0 && env->NZF != 0)
         GOTO_LABEL_PARAM(1);
-    FORCE_RET();
+    RETURN
 }
 
-OP(test_ls)
+INT_OP(test_ls)
 {
     if (env->CF == 0 || env->NZF == 0)
         GOTO_LABEL_PARAM(1);
-    FORCE_RET();
+    RETURN
 }
 
-OP(test_ge)
+INT_OP(test_ge)
 {
     if (((env->VF ^ env->NZF) & 0x80000000) == 0)
         GOTO_LABEL_PARAM(1);
-    FORCE_RET();
+    RETURN
 }
 
-OP(test_lt)
+INT_OP(test_lt)
 {
     if (((env->VF ^ env->NZF) & 0x80000000) != 0)
         GOTO_LABEL_PARAM(1);
-    FORCE_RET();
+    RETURN
 }
 
-OP(test_gt)
+INT_OP(test_gt)
 {
     if (env->NZF != 0 && ((env->VF ^ env->NZF) & 0x80000000) == 0)
         GOTO_LABEL_PARAM(1);
-    FORCE_RET();
+    RETURN
 }
 
-OP(test_le)
+INT_OP(test_le)
 {
     if (env->NZF == 0 || ((env->VF ^ env->NZF) & 0x80000000) != 0)
         GOTO_LABEL_PARAM(1);
-    FORCE_RET();
+    RETURN
 }
 
 OP(goto_tb0)
