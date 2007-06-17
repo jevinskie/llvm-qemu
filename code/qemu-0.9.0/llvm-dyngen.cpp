@@ -299,14 +299,17 @@ void gen_code_void_op(const char *name,
       fprintf(outfile, "args[%d] = zero;\n", i);
     }
     // add call to micro op
-    fprintf(outfile, "    currCall = new CallInst(M->getFunction(\"%s\"), (Value **)&args, %d, \"\", currBB);\n", name, MAX_ARGS);
+    fprintf(outfile, "    currCall = new CallInst(M->getFunction(\"%s\"), (Value **)&args, %d, \"\", currInst);\n", name, MAX_ARGS);
     if (strcmp(name, "op_exit_tb") == 0) {
-      fprintf(outfile, "    new ReturnInst(currBB);\n"
+      fprintf(outfile, "    //new ReturnInst(currBB);\n"
 	      "     currBB = new BasicBlock(\"\", tb);\n"
+	      "     currInst = new ReturnInst(currBB);\n"
 	      );
       
     }
-    //fprintf(outfile, "    InlineFunction(currCall);");
+    fprintf(outfile, "    InlineFunction(currCall);");
+	    // inlining can change the basic block the return instruction belongs to
+	    fprintf(outfile, "    currBB = currInst->getParent();");
 }
 
 
@@ -373,10 +376,13 @@ void gen_code_int_op(const char *name,
     }
     
     // add call to micro op
-    fprintf(outfile, "    currCall = new CallInst(M->getFunction(\"%s\"), (Value **)&args, %d, \"\", currBB);\n", name, MAX_ARGS);
+    fprintf(outfile, "    currCall = new CallInst(M->getFunction(\"%s\"), (Value **)&args, %d, \"\", currInst);\n", name, MAX_ARGS);
     fprintf(outfile, "    newBB = new BasicBlock(\"\", tb);\n");
-    fprintf(outfile, "    currSwitch = new SwitchInst(currCall, newBB, 1, currBB );\n");
+    fprintf(outfile, "    currInst->eraseFromParent();\n");
+    fprintf(outfile, "    currSwitch = new SwitchInst(currCall, newBB, 1, currBB);\n");
     fprintf(outfile, "    currBB = newBB;\n");
+    fprintf(outfile, "    currInst = new ReturnInst(currBB);\n");
+    fprintf(outfile, "    InlineFunction(currCall);\n");
 
     // register branch destinations
     for(i = 0; i < MAX_ARGS; i++) {
@@ -617,6 +623,7 @@ fprintf(outfile,
 "#include \"llvm/Transforms/Utils/Cloning.h\"\n"
 "#include \"llvm/Transforms/Utils/BasicBlockUtils.h\"\n"
 "#include <iostream>\n"
+
 "#define MAX_ARGS 3\n"
 "using namespace llvm;\n"
 "ExecutionEngine *EE;\n"
@@ -687,6 +694,7 @@ fprintf(outfile,
 "    for (int i = 0; i < 512; i++) labels[i] = 0;\n"
 );
 
+ fprintf(outfile, "Instruction *currInst = new ReturnInst(currBB);\n"); 
 
 	/* Generate prologue, if needed. */ 
 
@@ -697,9 +705,11 @@ fprintf(outfile,
 "        if (labels[opc_ptr - opc_buf]) {\n"
 "            struct label *tmp = labels[opc_ptr - opc_buf];\n"
 "            newBB = new BasicBlock(\"\", tb);\n"
+"            currInst->eraseFromParent();\n"
 "            new BranchInst(newBB, currBB);\n"
 "            tmp->inst->addCase(ConstantInt::get(Type::Int32Ty, tmp->param), newBB);\n"
 "            currBB = newBB;\n"
+"            currInst = new ReturnInst(currBB);\n"
 "        }\n");
  
 
@@ -739,8 +749,8 @@ fprintf(outfile,
 );
 
 /* generate some code patching */ 
- fprintf(outfile, "new ReturnInst(currBB);"); 
- fprintf(outfile, ""//"std::cout << *tb;\n"
+
+ fprintf(outfile, "//std::cout << *tb;\n"
 "void *code = EE->getPointerToFunction(tb);\n"
 	    //"if (code == NULL) {std::cout << \"compilation failed\\n\"; } else {std::cout << \"compilation successful\\n\"; }"
 );
