@@ -1,5 +1,6 @@
 /* ARM memory operations.  */
 
+void helper_ld(uint32_t);
 /* Load from address T1 into T0.  */
 #define MEM_LD_OP(name) \
 void OPPROTO glue(op_ld##name,MEMSUFFIX)(long __op_param1, long __op_param2, long __op_param3) \

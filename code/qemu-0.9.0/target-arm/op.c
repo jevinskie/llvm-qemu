@@ -901,6 +901,12 @@ OP(bkpt)
     cpu_loop_exit();
 }
 
+OP(kernel_trap)
+{
+    env->exception_index = EXCP_KERNEL_TRAP;
+    cpu_loop_exit();
+}
+
 /* VFP support.  We follow the convention used for VFP instrunctions:
    Single precition routines have a "s" suffix, double precision a
    "d" suffix.  */

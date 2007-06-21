@@ -622,6 +622,11 @@ fprintf(outfile,
 "#include \"llvm/Support/MemoryBuffer.h\"\n"
 "#include \"llvm/Transforms/Utils/Cloning.h\"\n"
 "#include \"llvm/Transforms/Utils/BasicBlockUtils.h\"\n"
+"#include \"llvm/PassManager.h\"\n"
+"#include \"llvm/Target/TargetData.h\"\n"
+"#include \"llvm/Analysis/LoadValueNumbering.h\"\n"
+"#include \"llvm/Transforms/Scalar.h\"\n"
+"#include \"QEMUAliasAnalysis.h\"\n"
 "#include <iostream>\n"
 
 "#define MAX_ARGS 3\n"
@@ -629,6 +634,7 @@ fprintf(outfile,
 "ExecutionEngine *EE;\n"
 "Module *M;\n"
 "Function *ops2[100];\n"
+"FunctionPassManager *Passes;\n"
 "struct label {\n"
 "    SwitchInst *inst;\n"
 "    int param;\n"
@@ -653,6 +659,14 @@ fprintf(outfile,
 "    //exit(-1);\n"
 "  }\n"
 "ExistingModuleProvider* MP = new ExistingModuleProvider(M);\n"
+"Passes = new FunctionPassManager(MP);\n"
+"Passes->add(new TargetData(M));\n"
+"Passes->add(createQemuAAPass());\n"
+"Passes->add(createLoadValueNumberingPass());\n"
+"Passes->add(createGCSEPass());\n"
+"Passes->add(createDeadStoreEliminationPass());\n"
+"Passes->add(createInstructionCombiningPass());\n"
+"\n"
 "EE = ExecutionEngine::create(MP, false);\n"
 	);
  add_resolv(outfile);
@@ -751,6 +765,8 @@ fprintf(outfile,
 /* generate some code patching */ 
 
  fprintf(outfile, "//std::cout << *tb;\n"
+	 //	 "tb->dump();\n"
+"Passes->run(*tb);\n"
 "void *code = EE->getPointerToFunction(tb);\n"
 	    //"if (code == NULL) {std::cout << \"compilation failed\\n\"; } else {std::cout << \"compilation successful\\n\"; }"
 );

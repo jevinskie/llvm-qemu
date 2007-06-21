@@ -212,7 +212,7 @@ endif
 ifeq ($(TARGET_ARCH), arm)
 OBJS+=nwfpe/fpa11.o nwfpe/fpa11_cpdo.o \
 nwfpe/fpa11_cpdt.o nwfpe/fpa11_cprt.o nwfpe/fpopcode.o nwfpe/single_cpdo.o \
- nwfpe/double_cpdo.o nwfpe/extended_cpdo.o arm-semi.o
+ nwfpe/double_cpdo.o nwfpe/extended_cpdo.o arm-semi.o QEMUAliasAnalysis.o
 endif
 ifeq ($(TARGET_ARCH), m68k)
 OBJS+= m68k-sim.o m68k-semi.o

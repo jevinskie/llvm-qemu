@@ -98,6 +98,7 @@ linux_user="no"
 darwin_user="no"
 build_docs="no"
 uname_release=""
+nptl="yes"
 
 # OS specific
 targetos=`uname -s`
@@ -254,6 +255,8 @@ for opt do
   ;;
   --enable-uname-release=*) uname_release="$optarg"
   ;;
+  --disable-nptl) nptl="no"
+  ;;
   esac
 done
 
@@ -297,6 +300,7 @@ echo "  --enable-system          enable all system emulation targets"
 echo "  --disable-system         disable all system emulation targets"
 echo "  --enable-linux-user      enable all linux usermode emulation targets"
 echo "  --disable-linux-user     disable all linux usermode emulation targets"
+echo "  --disable-nptl           disable usermode NPTL guest support"
 echo "  --enable-darwin-user     enable all darwin usermode emulation targets"
 echo "  --disable-darwin-user    disable all darwin usermode emulation targets"
 echo "  --fmod-lib               path to FMOD library"
@@ -477,6 +481,23 @@ if $cc -fno-reorder-blocks -fno-optimize-sibling-calls -o $TMPO $TMPC 2> /dev/nu
    have_gcc3_options="yes"
 fi
 
+# check NPTL support
+cat > $TMPC <<EOF
+#include <sched.h>
+void foo()
+{
+#ifndef CLONE_SETTLS
+#error bork
+#endif
+}
+EOF
+
+if $cc -c -o $TMPO $TMPC 2> /dev/null ; then
+  :
+else
+   nptl="no"
+fi
+
 ##########################################
 # SDL probe
 
@@ -626,6 +647,7 @@ echo "kqemu support     $kqemu"
 echo "Documentation     $build_docs"
 [ ! -z "$uname_release" ] && \
 echo "uname -r          $uname_release"
+echo "NPTL support      $nptl"
 
 if test $sdl_too_old = "yes"; then
 echo "-> Your SDL version is too old - please upgrade to have SDL support"
@@ -969,6 +991,14 @@ if test "$target_user_only" = "no"; then
         else
             echo "SDL_CFLAGS=`$sdl_config --cflags`" >> $config_mak
         fi
+    fi
+else
+    if test "$nptl" = "yes" ; then
+        case "$target_cpu" in
+          arm | armeb)
+            echo "#define USE_NPTL 1" >> $config_h
+          ;;
+        esac
     fi
 fi
 

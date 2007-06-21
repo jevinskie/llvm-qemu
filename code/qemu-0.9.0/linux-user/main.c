@@ -313,6 +313,51 @@ static void arm_cache_flush(target_ulong start, target_ulong last)
     }
 }
 
+/* Handle a jump to the kernel code page.  */
+static int
+do_kernel_trap(CPUARMState *env)
+{
+    uint32_t addr;
+    uint32_t *ptr;
+    uint32_t cpsr;
+
+    switch (env->regs[15]) {
+    case 0xffff0fc0: /* __kernel_cmpxchg */
+        /* XXX: This only works between threads, not between processes.
+           Use native atomic operations.  */
+        /* ??? This probably breaks horribly if the access segfaults.  */
+        cpu_lock();
+        ptr = (uint32_t *)env->regs[2];
+        cpsr = cpsr_read(env);
+        if (*ptr == env->regs[0]) {
+            *ptr = env->regs[1];
+            env->regs[0] = 0;
+            cpsr |= CPSR_C;
+        } else {
+            env->regs[0] = -1;
+            cpsr &= ~CPSR_C;
+        }
+        cpsr_write(env, cpsr, CPSR_C);
+        cpu_unlock();
+        break;
+    case 0xffff0fe0: /* __kernel_get_tls */
+        env->regs[0] = env->cp15.c13_tls;
+        break;
+    case 0xffff0fa0: break;
+    default:
+        return 1;
+    }
+    /* Jump back to the caller.  */
+    addr = env->regs[14];
+    if (addr & 1) {
+        env->thumb = 1;
+        addr &= ~1;
+    }
+    env->regs[15] = addr;
+
+    return 0;
+}
+
 void cpu_loop(CPUARMState *env)
 {
     int trapnr;
@@ -369,10 +414,8 @@ void cpu_loop(CPUARMState *env)
                     }
                 }
 
-                if (n == ARM_NR_cacheflush) {
-                    arm_cache_flush(env->regs[0], env->regs[1]);
-                } else if (n == ARM_NR_semihosting
-                           || n == ARM_NR_thumb_semihosting) {
+                if (n == ARM_NR_semihosting
+                    || n == ARM_NR_thumb_semihosting) {
                     env->regs[0] = do_arm_semihosting (env);
                 } else if (n == 0 || n >= ARM_SYSCALL_BASE
                            || (env->thumb && n == ARM_THUMB_SYSCALL)) {
@@ -383,14 +426,34 @@ void cpu_loop(CPUARMState *env)
                         n -= ARM_SYSCALL_BASE;
                         env->eabi = 0;
                     }
-                    env->regs[0] = do_syscall(env, 
-                                              n, 
-                                              env->regs[0],
-                                              env->regs[1],
-                                              env->regs[2],
-                                              env->regs[3],
-                                              env->regs[4],
-                                              env->regs[5]);
+                    if ( n > ARM_NR_BASE) {
+                        switch (n)
+                          {
+                          case ARM_NR_cacheflush:
+                              arm_cache_flush(env->regs[0], env->regs[1]);
+                              break;
+#ifdef USE_NPTL
+                          case ARM_NR_set_tls:
+                              cpu_set_tls(env, env->regs[0]);
+                              env->regs[0] = 0;
+                              break;
+#endif
+                          default:
+                              printf ("Error: Bad syscall: %x\n", n);
+                              goto error;
+                          }
+                      }
+                    else
+                      {
+                        env->regs[0] = do_syscall(env, 
+                                                  n, 
+                                                  env->regs[0],
+                                                  env->regs[1],
+                                                  env->regs[2],
+                                                  env->regs[3],
+                                                  env->regs[4],
+                                                  env->regs[5]);
+                      }
                 } else {
                     goto error;
                 }
@@ -428,6 +491,10 @@ void cpu_loop(CPUARMState *env)
                     queue_signal(info.si_signo, &info);
                   }
             }
+            break;
+        case EXCP_KERNEL_TRAP:
+            if (do_kernel_trap(env))
+              goto error;
             break;
         default:
         error:
@@ -1759,6 +1826,10 @@ int main(int argc, char **argv)
         ts->heap_base = info->brk;
         /* This will be filled in on the first SYS_HEAPINFO call.  */
         ts->heap_limit = 0;
+        /* Register the magic kernel code page.  The cpu will generate a
+           special exception when it tries to execute code here.  We can't
+           put real code here because it may be in use by the host kernel.  */
+        page_set_flags(0xffff0000, 0xffff0fff, 0);
     }
 #elif defined(TARGET_SPARC)
     {

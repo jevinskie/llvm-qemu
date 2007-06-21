@@ -78,6 +78,9 @@ typedef struct TaskState {
 #ifdef TARGET_M68K
     int sim_syscalls;
 #endif
+#ifdef USE_NPTL
+    uint32_t *child_tidptr;
+#endif
     int used; /* non zero if used */
     struct image_info *info;
     uint8_t stack[0];

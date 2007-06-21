@@ -37,6 +37,7 @@
 #define EXCP_IRQ             5
 #define EXCP_FIQ             6
 #define EXCP_BKPT            7
+#define EXCP_KERNEL_TRAP     8   /* Jumped to kernel code page.  */
 
 /* We currently assume float and double are IEEE single and double
    precision respectively.
@@ -87,6 +88,7 @@ typedef struct CPUARMState {
         uint32_t c9_data;
         uint32_t c13_fcse; /* FCSE PID.  */
         uint32_t c13_context; /* Context ID.  */
+        uint32_t c13_tls; /* Context ID.  */
     } cp15;
 
     /* Internal CPU feature flags.  */
@@ -136,6 +138,15 @@ void switch_mode(CPUARMState *, int);
 int cpu_arm_signal_handler(int host_signum, void *pinfo, 
                            void *puc);
 
+void cpu_lock(void);
+void cpu_unlock(void);
+#if defined(USE_NPTL)
+static inline void cpu_set_tls(CPUARMState *env, void *newtls)
+{
+  env->cp15.c13_tls = (uint32_t)(long)newtls;
+}
+#endif
+
 #define CPSR_M (0x1f)
 #define CPSR_T (1 << 5)
 #define CPSR_F (1 << 6)
@@ -147,7 +158,11 @@ int cpu_arm_signal_handler(int host_signum, void *pinfo,
 #define CPSR_J (1 << 24)
 #define CPSR_IT_0_1 (3 << 25)
 #define CPSR_Q (1 << 27)
-#define CPSR_NZCV (0xf << 28)
+#define CPSR_V (1 << 28)
+#define CPSR_C (1 << 29)
+#define CPSR_Z (1 << 30)
+#define CPSR_N (1 << 31)
+#define CPSR_NZCV (CPSR_N | CPSR_Z | CPSR_C | CPSR_V)
 
 #define CACHED_CPSR_BITS (CPSR_T | CPSR_Q | CPSR_NZCV)
 /* Return the current CPSR value.  */

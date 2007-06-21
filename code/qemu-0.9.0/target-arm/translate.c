@@ -2418,6 +2418,15 @@ static inline int gen_intermediate_code_internal(CPUState *env,
     nb_gen_labels = 0;
     lj = -1;
     do {
+#ifdef CONFIG_USER_ONLY
+        /* Intercept jump to the magic kernel page.  */
+        if (dc->pc > 0xffff0000) {
+            gen_op_kernel_trap();
+            dc->is_jmp = DISAS_UPDATE;
+            break;
+        }
+#endif
+
         if (env->nb_breakpoints > 0) {
             for(j = 0; j < env->nb_breakpoints; j++) {
                 if (env->breakpoints[j] == dc->pc) {

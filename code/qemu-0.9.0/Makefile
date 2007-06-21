@@ -45,6 +45,10 @@ qemu-img$(EXESUF): qemu-img.c cutils.c block.c block-raw.c block-cow.c block-qco
 dyngen$(EXESUF): llvm-dyngen.cpp
 	g++ $(LLVM_CXXFLAGS) -o $@ $^ $(LLVM_LIBS) $(LLVM_LDFLAGS)
 
+QEMUAliasAnalysis.o: QEMUAliasAnalysis.cpp
+	g++ $(LLVM_CXXFLAGS) -c $@ $^ $(LLVM_LIBS)
+
+
 clean:
 # avoid old build problems by removing potentially incorrect old files
 	rm -f config.mak config.h op-i386.h opc-i386.h gen-op-i386.h op-arm.h opc-arm.h gen-op-arm.h 

@@ -67,8 +67,17 @@
 #include <linux/kd.h>
 
 #include "qemu.h"
+#include "qemu_spinlock.h"
 
 //#define DEBUG
+
+#ifdef USE_NPTL
+#define CLONE_NPTL_FLAGS2 (CLONE_SETTLS | \
+    CLONE_PARENT_SETTID | CLONE_CHILD_SETTID | CLONE_CHILD_CLEARTID)
+#else
+/* XXX: Hardcode the above values.  */
+#define CLONE_NPTL_FLAGS2 0
+#endif
 
 #if defined(TARGET_I386) || defined(TARGET_ARM) || defined(TARGET_SPARC) \
     || defined(TARGET_M68K)
@@ -1693,20 +1702,38 @@ int do_modify_ldt(CPUX86State *env, int func, target_ulong ptr, unsigned long by
    thread/process */
 #define NEW_STACK_SIZE 8192
 
+#ifdef USE_NPTL
+static spinlock_t nptl_lock = SPIN_LOCK_UNLOCKED;
+#endif
+
 static int clone_func(void *arg)
 {
     CPUState *env = arg;
+#ifdef HAVE_NPTL
+    /* Wait until the parent has finshed initializing the tls state.  */
+    while (!spin_trylock(&nptl_lock))
+        usleep(1);
+    spin_unlock(&nptl_lock);
+#endif
     cpu_loop(env);
     /* never exits */
     return 0;
 }
 
-int do_fork(CPUState *env, unsigned int flags, unsigned long newsp)
+int do_fork(CPUState *env, unsigned int flags, unsigned long newsp,
+            uint32_t *parent_tidptr, void *newtls,
+            uint32_t *child_tidptr)
 {
     int ret;
     TaskState *ts;
     uint8_t *new_stack;
     CPUState *new_env;
+#ifdef USE_NPTL
+    unsigned int nptl_flags;
+
+    if (flags & CLONE_PARENT_SETTID)
+        *parent_tidptr = gettid();
+#endif
     
     if (flags & CLONE_VM) {
         ts = malloc(sizeof(TaskState) + NEW_STACK_SIZE);
@@ -1762,16 +1789,64 @@ int do_fork(CPUState *env, unsigned int flags, unsigned long newsp)
 #error unsupported target CPU
 #endif
         new_env->opaque = ts;
+#ifdef USE_NPTL
+        nptl_flags = flags;
+        flags &= ~CLONE_NPTL_FLAGS2;
+
+        if (nptl_flags & CLONE_CHILD_CLEARTID) {
+            ts->child_tidptr = child_tidptr;
+        }
+
+        if (nptl_flags & CLONE_SETTLS)
+            cpu_set_tls (new_env, newtls);
+
+        /* Grab the global cpu lock so that the thread setup appears
+           atomic.  */
+        if (nptl_flags & CLONE_CHILD_SETTID)
+            spin_lock(&nptl_lock);
+
+#else
+        if (flags & CLONE_NPTL_FLAGS2)
+            return -EINVAL;
+#endif
 #ifdef __ia64__
         ret = __clone2(clone_func, new_stack + NEW_STACK_SIZE, flags, new_env);
 #else
 	ret = clone(clone_func, new_stack + NEW_STACK_SIZE, flags, new_env);
 #endif
+#ifdef USE_NPTL
+        if (ret != -1) {
+            if (nptl_flags & CLONE_CHILD_SETTID)
+                *child_tidptr = ret;
+        }
+
+        /* Allow the child to continue.  */
+        if (nptl_flags & CLONE_CHILD_SETTID)
+            spin_unlock(&nptl_lock);
+#endif
     } else {
         /* if no CLONE_VM, we consider it is a fork */
-        if ((flags & ~CSIGNAL) != 0)
+        if ((flags & ~(CSIGNAL | CLONE_NPTL_FLAGS2)) != 0)
             return -EINVAL;
         ret = fork();
+#ifdef USE_NPTL
+        /* There is a race condition here.  The parent process could
+           theoretically read the TID in the child process before the child
+           tid is set.  This would require using either ptrace
+           (not implemented) or having *_tidptr to point at a shared memory
+           mapping.  We can't repeat the spinlock hack used above because
+           the child process gets its own copy of the lock.  */
+        if (ret == 0) {
+            /* Child Process.  */
+            if (flags & CLONE_CHILD_SETTID)
+                *child_tidptr = gettid();
+            ts = (TaskState *)env->opaque;
+            if (flags & CLONE_CHILD_CLEARTID)
+                ts->child_tidptr = child_tidptr;
+            if (flags & CLONE_SETTLS)
+                cpu_set_tls (env, newtls);
+        }
+#endif
     }
     return ret;
 }
@@ -2034,7 +2109,7 @@ long do_syscall(void *cpu_env, int num, long arg1, long arg2, long arg3,
         ret = do_brk(arg1);
         break;
     case TARGET_NR_fork:
-        ret = get_errno(do_fork(cpu_env, SIGCHLD, 0));
+        ret = get_errno(do_fork(cpu_env, SIGCHLD, 0, NULL, NULL, NULL));
         break;
     case TARGET_NR_waitpid:
         {
@@ -3105,7 +3180,8 @@ long do_syscall(void *cpu_env, int num, long arg1, long arg2, long arg3,
         ret = get_errno(fsync(arg1));
         break;
     case TARGET_NR_clone:
-        ret = get_errno(do_fork(cpu_env, arg1, arg2));
+        ret = get_errno(do_fork(cpu_env, arg1, arg2, (uint32_t *)arg3,
+                        (void *)arg4, (uint32_t *)arg5));
         break;
 #ifdef __NR_exit_group
         /* new thread calls */
@@ -3455,7 +3531,8 @@ long do_syscall(void *cpu_env, int num, long arg1, long arg2, long arg3,
 #endif
 #ifdef TARGET_NR_vfork
     case TARGET_NR_vfork:
-        ret = get_errno(do_fork(cpu_env, CLONE_VFORK | CLONE_VM | SIGCHLD, 0));
+        ret = get_errno(do_fork(cpu_env, CLONE_VFORK | CLONE_VM | SIGCHLD, 0,
+                                NULL, NULL, NULL));
         break;
 #endif
 #ifdef TARGET_NR_ugetrlimit
@@ -3960,4 +4037,3 @@ long do_syscall(void *cpu_env, int num, long arg1, long arg2, long arg3,
 #endif
     return ret;
 }
-
