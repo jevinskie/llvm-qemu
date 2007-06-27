@@ -599,6 +599,15 @@ int cpu_exec(CPUState *env1)
                 }
 #endif
                 tb = tb_find_fast();
+		if (tb->count == 1000000) {
+		  int code_gen_size;
+		  extern int optimize;
+		  optimize = 1;
+		  //cpu_gen_code(env, tb, CODE_GEN_MAX_SIZE, &code_gen_size);
+		}
+#ifdef PROFILE_HOTSPOTS
+		tb->count++;
+#endif
 #ifdef DEBUG_EXEC
                 if ((loglevel & CPU_LOG_EXEC)) {
                     fprintf(logfile, "Trace 0x%08lx [" TARGET_FMT_lx "] %s\n",

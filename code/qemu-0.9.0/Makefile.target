@@ -21,7 +21,7 @@ ifdef CONFIG_LINUX_USER
 VPATH+=:$(SRC_PATH)/linux-user
 CPPFLAGS+=-I$(SRC_PATH)/linux-user -I$(SRC_PATH)/linux-user/$(TARGET_ARCH)
 endif
-BASE_CFLAGS=
+BASE_CFLAGS=-DPROFILE_HOTSPOTS
 BASE_LDFLAGS=
 #CFLAGS+=-Werror
 LIBS=
@@ -463,7 +463,7 @@ SDL_LIBS := $(filter-out -mwindows, $(SDL_LIBS)) -mconsole
 endif
 
 $(QEMU_SYSTEM): $(VL_OBJS) libqemu.a
-	$(CC) $(VL_LDFLAGS) -o $@ $^ $(LIBS) $(SDL_LIBS) $(COCOA_LIBS) $(VL_LIBS)
+	g++ $(VL_LDFLAGS) ../QEMUAliasAnalysis.o -o $@ $^ $(SDL_LIBS) $(COCOA_LIBS) $(VL_LIBS) $(LIBS) $(LLVM_LIBS) $(LLVM_LDFLAGS) -ldl
 
 cocoa.o: cocoa.m
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(BASE_CFLAGS) -c -o $@ $<

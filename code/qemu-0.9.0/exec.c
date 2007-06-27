@@ -138,6 +138,10 @@ static int tlb_flush_count;
 static int tb_flush_count;
 static int tb_phys_invalidate_count;
 
+#ifdef PROFILE_HOTSPOTS
+void dump_tb_execution_count();
+#endif
+
 static void page_init(void)
 {
     /* NOTE: we can always suppose that qemu_host_page_size >=
@@ -274,6 +278,11 @@ void cpu_exec_init(CPUState *env)
     }
     env->cpu_index = cpu_index;
     *penv = env;
+#ifdef PROFILE_HOTSPOTS
+    if ((loglevel & CPU_LOG_HOTSPOTS)) {
+      if (atexit(dump_tb_execution_count) == 0)       printf("installing callback\n");
+    }
+#endif
 }
 
 static inline void invalidate_page_bitmap(PageDesc *p)
@@ -887,6 +896,9 @@ TranslationBlock *tb_alloc(target_ulong pc)
     tb = &tbs[nb_tbs++];
     tb->pc = pc;
     tb->cflags = 0;
+#ifdef PROFILE_HOTSPOTS
+    tb->count = 0;
+#endif
     return tb;
 }
 
@@ -1160,6 +1172,10 @@ CPULogItem cpu_log_items[] = {
 #ifdef DEBUG_IOPORT
     { CPU_LOG_IOPORT, "ioport",
       "show all i/o ports accesses" },
+#endif
+#ifdef PROFILE_HOTSPOTS
+    { CPU_LOG_HOTSPOTS, "hotspots",
+      "show execution count of every TB" },
 #endif
     { 0, NULL, NULL },
 };
@@ -2386,6 +2402,24 @@ void dump_exec_info(FILE *f,
     cpu_fprintf(f, "TB invalidate count %d\n", tb_phys_invalidate_count);
     cpu_fprintf(f, "TLB flush count     %d\n", tlb_flush_count);
 }
+
+#ifdef PROFILE_HOTSPOTS
+void dump_tb_execution_count()
+{
+    int i;
+    TranslationBlock *tb;
+    int execution_sum = 0;
+
+    printf("dumping\n");
+    for(i = 0; i < nb_tbs; i++) {
+        tb = &tbs[i];
+	fprintf(logfile, "0x%08x: %d   size: %d\n", tb->pc, tb->count, tb->size);
+	execution_sum += tb->count;
+    }
+    fprintf(logfile, "average executions: %d\n", execution_sum / nb_tbs);
+    fprintf(logfile, "tb count: %d\n", nb_tbs);
+}
+#endif
 
 #if !defined(CONFIG_USER_ONLY) 
 

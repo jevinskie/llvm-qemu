@@ -635,6 +635,7 @@ fprintf(outfile,
 "Module *M;\n"
 "Function *ops2[100];\n"
 "FunctionPassManager *Passes;\n"
+"int optimize;\n"
 "struct label {\n"
 "    SwitchInst *inst;\n"
 "    int param;\n"
@@ -766,8 +767,14 @@ fprintf(outfile,
 
  fprintf(outfile, "//std::cout << *tb;\n"
 	 //	 "tb->dump();\n"
-"Passes->run(*tb);\n"
+"if (optimize) {\n"
+"//Passes->run(*tb);\n"
+"optimize = 0;\n"
+"}\n"
+"//extern int DebugFlag;\n"
+"//DebugFlag = 1;\n"
 "void *code = EE->getPointerToFunction(tb);\n"
+"//DebugFlag = 0;\n"
 	    //"if (code == NULL) {std::cout << \"compilation failed\\n\"; } else {std::cout << \"compilation successful\\n\"; }"
 );
     /* flush instruction cache */

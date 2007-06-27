@@ -167,6 +167,9 @@ typedef struct TranslationBlock {
     unsigned int flags; /* flags defining in which context the code was generated */
     uint16_t size;      /* size of target code for this block (1 <=
                            size <= TARGET_PAGE_SIZE) */
+#ifdef PROFILE_HOTSPOTS
+    uint32_t count;
+#endif
     uint16_t cflags;    /* compile flags */
 #define CF_CODE_COPY   0x0001 /* block was generated in code copy mode */
 #define CF_TB_FP_USED  0x0002 /* fp ops are used in the TB */

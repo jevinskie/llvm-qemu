@@ -3187,6 +3187,10 @@ long do_syscall(void *cpu_env, int num, long arg1, long arg2, long arg3,
         /* new thread calls */
     case TARGET_NR_exit_group:
         gdb_exit(cpu_env, arg1);
+#ifdef PROFILE_HOTSPOTS
+	extern void dump_tb_execution_count();
+	dump_tb_execution_count();
+#endif
         ret = get_errno(exit_group(arg1));
         break;
 #endif
