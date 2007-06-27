@@ -1,0 +1,1413 @@
+CPU: PIII, speed 1700 MHz (estimated)
+Counted CPU_CLK_UNHALTED events (clocks processor is not halted) with a unit mask of 0x00 (No unit mask) count 100000
+samples  %        image name               symbol name
+-------------------------------------------------------------------------------
+91349    28.4322  qemu-system-arm          tb_find_fast
+  91349    100.000  qemu-system-arm          tb_find_fast [self]
+-------------------------------------------------------------------------------
+80273    24.9848  anon (tgid:8876 range:0x8ad0000-0x9ad1000) (no symbols)
+  80273    100.000  anon (tgid:8876 range:0x8ad0000-0x9ad1000) (no symbols) [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          main
+64146    19.9653  qemu-system-arm          cpu_arm_exec
+  64146    99.9470  qemu-system-arm          cpu_arm_exec [self]
+  28        0.0436  qemu-system-arm          do_interrupt
+  5         0.0078  qemu-system-arm          cpsr_read
+  1         0.0016  qemu-system-arm          switch_mode
+-------------------------------------------------------------------------------
+29431     9.1603  qemu-system-arm          tb_jmp_cache_hash_func
+  29431    100.000  qemu-system-arm          tb_jmp_cache_hash_func [self]
+-------------------------------------------------------------------------------
+16233     5.0525  qemu-system-arm          tb_add_jump
+  16233    100.000  qemu-system-arm          tb_add_jump [self]
+-------------------------------------------------------------------------------
+10412     3.2407  qemu-system-arm          spin_lock
+  10412    100.000  qemu-system-arm          spin_lock [self]
+-------------------------------------------------------------------------------
+8644      2.6904  qemu-system-arm          tb_find_slow
+  8644     92.6275  qemu-system-arm          tb_find_slow [self]
+  578       6.1937  qemu-system-arm          cpu_arm_gen_code
+  97        1.0394  qemu-system-arm          tb_link_phys
+  4         0.0429  qemu-system-arm          tb_alloc
+  3         0.0321  qemu-system-arm          tb_phys_hash_func
+  2         0.0214  qemu-system-arm          dyngen_labels
+  2         0.0214  qemu-system-arm          gen_intermediate_code
+  2         0.0214  qemu-system-arm          dyngen_code
+-------------------------------------------------------------------------------
+5145      1.6014  qemu-system-arm          spin_unlock
+  5145     100.000  qemu-system-arm          spin_unlock [self]
+-------------------------------------------------------------------------------
+4933      1.5354  qemu-system-arm          get_phys_addr_code
+  4933     100.000  qemu-system-arm          get_phys_addr_code [self]
+-------------------------------------------------------------------------------
+  7        100.000  qemu-system-arm          cpu_register_physical_memory
+1385      0.4311  qemu-system-arm          tlb_flush
+  1385     100.000  qemu-system-arm          tlb_flush [self]
+-------------------------------------------------------------------------------
+  22        1.4212  qemu-system-arm          tlb_fill
+  1526     98.5788  qemu-system-arm          cpu_arm_handle_mmu_fault
+1094      0.3405  qemu-system-arm          tlb_set_page_exec
+  1094     70.6718  qemu-system-arm          tlb_set_page_exec [self]
+  365      23.5788  qemu-system-arm          phys_page_find
+  62        4.0052  qemu-system-arm          phys_page_find_alloc
+  27        1.7442  qemu-system-arm          cpu_physical_memory_is_dirty
+-------------------------------------------------------------------------------
+  87        3.8141  qemu-system-arm          tlb_fill
+  2194     96.1859  qemu-system-arm          cpu_arm_handle_mmu_fault
+1070      0.3330  qemu-system-arm          get_phys_addr
+  1070     46.9093  qemu-system-arm          get_phys_addr [self]
+  854      37.4397  qemu-system-arm          ldl_phys
+  150       6.5761  qemu-system-arm          ldl_le_p
+  133       5.8308  qemu-system-arm          check_ap
+  74        3.2442  qemu-system-arm          phys_page_find
+-------------------------------------------------------------------------------
+  1         0.1316  qemu-system-arm          icp_pic_init
+  10        1.3158  qemu-system-arm          integratorcp_init
+  45        5.9211  qemu-system-arm          cpu_register_physical_memory
+  62        8.1579  qemu-system-arm          tlb_set_page_exec
+  76       10.0000  qemu-system-arm          ldl_phys
+  566      74.4737  qemu-system-arm          phys_page_find
+759       0.2362  qemu-system-arm          phys_page_find_alloc
+  759      99.8684  qemu-system-arm          phys_page_find_alloc [self]
+  1         0.1316  qemu-system-arm          qemu_vmalloc
+-------------------------------------------------------------------------------
+  4790     100.000  qemu-system-arm          tlb_fill
+613       0.1908  qemu-system-arm          cpu_arm_handle_mmu_fault
+  2194     45.1998  qemu-system-arm          get_phys_addr
+  1526     31.4380  qemu-system-arm          tlb_set_page_exec
+  613      12.6288  qemu-system-arm          cpu_arm_handle_mmu_fault [self]
+  219       4.5117  qemu-system-arm          tlb_set_page
+  135       2.7812  qemu-system-arm          cpu_physical_memory_is_dirty
+  56        1.1537  qemu-system-arm          ldl_phys
+  56        1.1537  qemu-system-arm          phys_page_find
+  55        1.1331  qemu-system-arm          check_ap
+-------------------------------------------------------------------------------
+516       0.1606  qemu-system-arm          tb_phys_hash_func
+  516      100.000  qemu-system-arm          tb_phys_hash_func [self]
+-------------------------------------------------------------------------------
+442       0.1376  qemu-system-arm          __ldl_mmu
+  442      100.000  qemu-system-arm          __ldl_mmu [self]
+-------------------------------------------------------------------------------
+  56        6.1538  qemu-system-arm          cpu_arm_handle_mmu_fault
+  854      93.8462  qemu-system-arm          get_phys_addr
+381       0.1186  qemu-system-arm          ldl_phys
+  412      45.2747  qemu-system-arm          phys_page_find
+  381      41.8681  qemu-system-arm          ldl_phys [self]
+  76        8.3516  qemu-system-arm          phys_page_find_alloc
+  41        4.5055  qemu-system-arm          ldl_le_p
+-------------------------------------------------------------------------------
+  56        6.1742  qemu-system-arm          cpu_arm_handle_mmu_fault
+  74        8.1588  qemu-system-arm          get_phys_addr
+  365      40.2426  qemu-system-arm          tlb_set_page_exec
+  412      45.4245  qemu-system-arm          ldl_phys
+341       0.1061  qemu-system-arm          phys_page_find
+  566      62.4035  qemu-system-arm          phys_page_find_alloc
+  341      37.5965  qemu-system-arm          phys_page_find [self]
+-------------------------------------------------------------------------------
+304       0.0946  qemu-system-arm          regs_to_env
+  304      100.000  qemu-system-arm          regs_to_env [self]
+-------------------------------------------------------------------------------
+  53       19.4853  qemu-system-arm          tlb_fill
+  219      80.5147  qemu-system-arm          cpu_arm_handle_mmu_fault
+272       0.0847  qemu-system-arm          tlb_set_page
+  272      100.000  qemu-system-arm          tlb_set_page [self]
+-------------------------------------------------------------------------------
+  241      100.000  qemu-system-arm          ldub_code
+249       0.0775  qemu-system-arm          __ldb_cmmu
+  249      98.4190  qemu-system-arm          __ldb_cmmu [self]
+  4         1.5810  qemu-system-arm          ldub_p
+-------------------------------------------------------------------------------
+239       0.0744  qemu-system-arm          __ldb_mmu
+  239      100.000  qemu-system-arm          __ldb_mmu [self]
+-------------------------------------------------------------------------------
+239       0.0744  qemu-system-arm          ldl_le_p
+  239      100.000  qemu-system-arm          ldl_le_p [self]
+-------------------------------------------------------------------------------
+  4         1.8868  qemu-system-arm          __ldb_cmmu
+  208      98.1132  qemu-system-arm          ldub_code
+212       0.0660  qemu-system-arm          ldub_p
+  212      100.000  qemu-system-arm          ldub_p [self]
+-------------------------------------------------------------------------------
+  32       100.000  qemu-system-arm          ldub_code
+197       0.0613  qemu-system-arm          tlb_fill
+  4790     90.2581  qemu-system-arm          cpu_arm_handle_mmu_fault
+  197       3.7121  qemu-system-arm          tlb_fill [self]
+  141       2.6569  qemu-system-arm          cpu_restore_state
+  87        1.6393  qemu-system-arm          get_phys_addr
+  53        0.9987  qemu-system-arm          tlb_set_page
+  22        0.4145  qemu-system-arm          tlb_set_page_exec
+  15        0.2826  qemu-system-arm          tb_find_pc
+  2         0.0377  qemu-system-arm          gen_intermediate_code_pc
+-------------------------------------------------------------------------------
+  41       21.4660  qemu-system-arm          ldl_phys
+  150      78.5340  qemu-system-arm          get_phys_addr
+191       0.0594  qemu-system-arm          ldl_le_p
+  191      100.000  qemu-system-arm          ldl_le_p [self]
+-------------------------------------------------------------------------------
+  55       29.2553  qemu-system-arm          cpu_arm_handle_mmu_fault
+  133      70.7447  qemu-system-arm          get_phys_addr
+188       0.0585  qemu-system-arm          check_ap
+  188      100.000  qemu-system-arm          check_ap [self]
+-------------------------------------------------------------------------------
+  159      100.000  qemu-system-arm          io_readb
+172       0.0535  qemu-system-arm          pl050_read
+  172      99.4220  qemu-system-arm          pl050_read [self]
+  1         0.5780  qemu-system-arm          ps2_read_data
+-------------------------------------------------------------------------------
+166       0.0517  qemu-system-arm          ldub_code
+  241      37.2488  qemu-system-arm          __ldb_cmmu
+  208      32.1484  qemu-system-arm          ldub_p
+  166      25.6569  qemu-system-arm          ldub_code [self]
+  32        4.9459  qemu-system-arm          tlb_fill
+-------------------------------------------------------------------------------
+  27       16.6667  qemu-system-arm          tlb_set_page_exec
+  135      83.3333  qemu-system-arm          cpu_arm_handle_mmu_fault
+162       0.0504  qemu-system-arm          cpu_physical_memory_is_dirty
+  162      100.000  qemu-system-arm          cpu_physical_memory_is_dirty [self]
+-------------------------------------------------------------------------------
+  5         1.4970  qemu-system-arm          gen_intermediate_code
+  329      98.5030  qemu-system-arm          gen_intermediate_code_internal
+161       0.0501  qemu-system-arm          disas_arm_insn
+  161      48.2036  qemu-system-arm          disas_arm_insn [self]
+  38       11.3772  qemu-system-arm          ldl_code
+  34       10.1796  qemu-system-arm          gen_movl_T1_reg
+  24        7.1856  qemu-system-arm          gen_movl_T0_reg
+  20        5.9880  qemu-system-arm          gen_movl_reg_T0
+  10        2.9940  qemu-system-arm          gen_add_data_offset
+  9         2.6946  qemu-system-arm          gen_movl_reg_T1
+  8         2.3952  qemu-system-arm          ldl_le_p
+  6         1.7964  qemu-system-arm          gen_op_movl_T1_im
+  6         1.7964  qemu-system-arm          gen_movl_reg_TN
+  3         0.8982  qemu-system-arm          gen_op_ldl_kernel
+  3         0.8982  qemu-system-arm          gen_op_addl_T1_im
+  3         0.8982  qemu-system-arm          gen_movl_TN_reg
+  1         0.2994  qemu-system-arm          gen_op_test_ne
+  1         0.2994  qemu-system-arm          gen_op_test_hi
+  1         0.2994  qemu-system-arm          gen_op_ldub_user
+  1         0.2994  qemu-system-arm          gen_op_sarl_T1_T0
+  1         0.2994  qemu-system-arm          gen_op_orl_T0_T1
+  1         0.2994  qemu-system-arm          gen_op_subl_T0_T1
+  1         0.2994  qemu-system-arm          gen_op_addl_T0_T1
+  1         0.2994  qemu-system-arm          gen_add_datah_offset
+  1         0.2994  qemu-system-arm          gen_set_psr_T0
+-------------------------------------------------------------------------------
+  2         1.2903  qemu-system-arm          tb_find_slow
+  153      98.7097  qemu-system-arm          cpu_arm_gen_code
+155       0.0482  qemu-system-arm          dyngen_code
+  155      100.000  qemu-system-arm          dyngen_code [self]
+-------------------------------------------------------------------------------
+134       0.0417  qemu-system-arm          helper_set_cp15
+  134      100.000  qemu-system-arm          helper_set_cp15 [self]
+-------------------------------------------------------------------------------
+93        0.0289  qemu-system-arm          io_readb
+  159      63.0952  qemu-system-arm          pl050_read
+  93       36.9048  qemu-system-arm          io_readb [self]
+-------------------------------------------------------------------------------
+75        0.0233  qemu-system-arm          __stl_mmu
+  75       100.000  qemu-system-arm          __stl_mmu [self]
+-------------------------------------------------------------------------------
+53        0.0165  qemu-system-arm          ldub_p
+  53       100.000  qemu-system-arm          ldub_p [self]
+-------------------------------------------------------------------------------
+  15       30.0000  qemu-system-arm          tlb_protect_code
+  35       70.0000  qemu-system-arm          cpu_physical_memory_reset_dirty
+50        0.0156  qemu-system-arm          tlb_reset_dirty_range
+  50       100.000  qemu-system-arm          tlb_reset_dirty_range [self]
+-------------------------------------------------------------------------------
+  2         0.4454  qemu-system-arm          cpu_restore_state
+  4         0.8909  qemu-system-arm          cpu_arm_gen_code
+  126      28.0624  qemu-system-arm          gen_intermediate_code_pc
+  317      70.6013  qemu-system-arm          gen_intermediate_code
+44        0.0137  qemu-system-arm          gen_intermediate_code_internal
+  329      73.2739  qemu-system-arm          disas_arm_insn
+  44        9.7996  qemu-system-arm          gen_intermediate_code_internal [self]
+  16        3.5635  qemu-system-arm          gen_jmp
+  9         2.0045  qemu-system-arm          gen_goto_tb
+  7         1.5590  qemu-system-arm          gen_movl_reg_T0
+  5         1.1136  qemu-system-arm          gen_op_ldl_kernel
+  4         0.8909  qemu-system-arm          gen_op_exit_tb
+  4         0.8909  qemu-system-arm          gen_movl_T1_reg
+  3         0.6682  qemu-system-arm          gen_op_test_ne
+  2         0.4454  qemu-system-arm          gen_op_stl_user
+  2         0.4454  qemu-system-arm          gen_movl_reg_T1
+  2         0.4454  qemu-system-arm          gen_op_movl_r14_T0
+  1         0.2227  qemu-system-arm          gen_add_data_offset
+  1         0.2227  qemu-system-arm          gen_movl_T0_reg
+  1         0.2227  qemu-system-arm          gen_op_bx_T0
+  1         0.2227  qemu-system-arm          gen_op_movl_T0_T2
+  1         0.2227  qemu-system-arm          gen_op_movl_T2_T0
+  1         0.2227  qemu-system-arm          gen_new_label
+  1         0.2227  qemu-system-arm          gen_op_shll_T1_T0
+  1         0.2227  qemu-system-arm          gen_op_shrl_T1_im_cc
+  1         0.2227  qemu-system-arm          gen_op_shll_T1_im
+  1         0.2227  qemu-system-arm          gen_op_stl_kernel
+  1         0.2227  qemu-system-arm          gen_op_ldl_user
+  1         0.2227  qemu-system-arm          gen_op_test_cc
+  1         0.2227  qemu-system-arm          gen_op_test_eq
+  1         0.2227  qemu-system-arm          gen_op_notl_T1
+  1         0.2227  qemu-system-arm          gen_op_andl_T0_T1
+  1         0.2227  qemu-system-arm          gen_op_rsbl_T0_T1
+  1         0.2227  qemu-system-arm          gen_op_subl_T0_T1_cc
+  1         0.2227  qemu-system-arm          gen_op_subl_T0_T1
+  1         0.2227  qemu-system-arm          gen_op_addl_T0_T1
+  1         0.2227  qemu-system-arm          gen_op_addl_T1_T2
+  1         0.2227  qemu-system-arm          gen_op_addl_T1_im
+  1         0.2227  qemu-system-arm          gen_op_movl_T0_im
+-------------------------------------------------------------------------------
+  38       100.000  qemu-system-arm          disas_arm_insn
+37        0.0115  qemu-system-arm          ldl_code
+  37       97.3684  qemu-system-arm          ldl_code [self]
+  1         2.6316  qemu-system-arm          ldl_le_p
+-------------------------------------------------------------------------------
+  65       100.000  qemu-system-arm          tlb_protect_code
+30        0.0093  qemu-system-arm          cpu_physical_memory_reset_dirty
+  35       53.8462  qemu-system-arm          tlb_reset_dirty_range
+  30       46.1538  qemu-system-arm          cpu_physical_memory_reset_dirty [self]
+-------------------------------------------------------------------------------
+  2         2.0833  qemu-system-arm          main
+  94       97.9167  qemu-system-arm          main_loop
+25        0.0078  qemu-system-arm          main_loop_wait
+  36       37.5000  qemu-system-arm          qemu_run_timers
+  25       26.0417  qemu-system-arm          main_loop_wait [self]
+  18       18.7500  qemu-system-arm          slirp_select_poll
+  6         6.2500  qemu-system-arm          qemu_get_clock
+  3         3.1250  qemu-system-arm          updtime
+  2         2.0833  qemu-system-arm          cpu_get_clock
+  2         2.0833  qemu-system-arm          qemu_aio_poll
+  2         2.0833  qemu-system-arm          slirp_select_fill
+  1         1.0417  qemu-system-arm          get_clock
+  1         1.0417  qemu-system-arm          stdio_read_poll
+-------------------------------------------------------------------------------
+24        0.0075  qemu-system-arm          __stb_mmu
+  24       100.000  qemu-system-arm          __stb_mmu [self]
+-------------------------------------------------------------------------------
+  2         8.3333  qemu-system-arm          tb_find_slow
+  22       91.6667  qemu-system-arm          cpu_arm_gen_code
+24        0.0075  qemu-system-arm          dyngen_labels
+  24       100.000  qemu-system-arm          dyngen_labels [self]
+-------------------------------------------------------------------------------
+  3        15.0000  qemu-system-arm          do_interrupt
+  17       85.0000  qemu-system-arm          switch_mode
+23        0.0072  qemu-system-arm          bank_number
+  23       100.000  qemu-system-arm          bank_number [self]
+-------------------------------------------------------------------------------
+20        0.0062  qemu-system-arm          __ldw_mmu
+  20       100.000  qemu-system-arm          __ldw_mmu [self]
+-------------------------------------------------------------------------------
+  2         2.7778  qemu-system-arm          integratorcm_init
+  3         4.1667  qemu-system-arm          icp_control_init
+  4         5.5556  qemu-system-arm          icp_pic_init
+  21       29.1667  qemu-system-arm          integratorcm_do_remap
+  42       58.3333  qemu-system-arm          integratorcp_init
+20        0.0062  qemu-system-arm          cpu_register_physical_memory
+  45       62.5000  qemu-system-arm          phys_page_find_alloc
+  20       27.7778  qemu-system-arm          cpu_register_physical_memory [self]
+  7         9.7222  qemu-system-arm          tlb_flush
+-------------------------------------------------------------------------------
+  28       100.000  qemu-system-arm          cpu_arm_exec
+17        0.0053  qemu-system-arm          do_interrupt
+  17       54.8387  qemu-system-arm          do_interrupt [self]
+  11       35.4839  qemu-system-arm          switch_mode
+  3         9.6774  qemu-system-arm          bank_number
+-------------------------------------------------------------------------------
+16        0.0050  qemu-system-arm          stl_le_p
+  16       100.000  qemu-system-arm          stl_le_p [self]
+-------------------------------------------------------------------------------
+  15       100.000  qemu-system-arm          tlb_fill
+16        0.0050  qemu-system-arm          tb_find_pc
+  16       100.000  qemu-system-arm          tb_find_pc [self]
+-------------------------------------------------------------------------------
+  4        10.5263  qemu-system-arm          gen_intermediate_code_internal
+  34       89.4737  qemu-system-arm          disas_arm_insn
+15        0.0047  qemu-system-arm          gen_movl_T1_reg
+  15       39.4737  qemu-system-arm          gen_movl_T1_reg [self]
+  9        23.6842  qemu-system-arm          gen_movl_TN_reg
+  3         7.8947  qemu-system-arm          gen_op_movl_T1_r4
+  2         5.2632  qemu-system-arm          gen_op_movl_T1_r0
+  2         5.2632  qemu-system-arm          gen_op_movl_T1_r2
+  1         2.6316  qemu-system-arm          gen_op_movl_T1_r1
+  1         2.6316  qemu-system-arm          gen_op_movl_T1_r3
+  1         2.6316  qemu-system-arm          gen_op_movl_T1_r5
+  1         2.6316  qemu-system-arm          gen_op_movl_T1_r6
+  1         2.6316  qemu-system-arm          gen_op_movl_T1_r11
+  1         2.6316  qemu-system-arm          gen_op_movl_T1_r12
+  1         2.6316  qemu-system-arm          gen_op_movl_T1_r13
+-------------------------------------------------------------------------------
+  1         8.3333  qemu-system-arm          cpu_arm_exec
+  11       91.6667  qemu-system-arm          do_interrupt
+14        0.0044  qemu-system-arm          switch_mode
+  17       54.8387  qemu-system-arm          bank_number
+  14       45.1613  qemu-system-arm          switch_mode [self]
+-------------------------------------------------------------------------------
+  13       100.000  qemu-system-arm          main
+13        0.0040  qemu-system-arm          init_ioports
+  13       100.000  qemu-system-arm          init_ioports [self]
+-------------------------------------------------------------------------------
+  1         8.3333  qemu-system-arm          gen_jmp
+  1         8.3333  qemu-system-arm          gen_intermediate_code_internal
+  10       83.3333  qemu-system-arm          gen_goto_tb
+12        0.0037  qemu-system-arm          gen_op_movl_T0_im
+  12       100.000  qemu-system-arm          gen_op_movl_T0_im [self]
+-------------------------------------------------------------------------------
+  18       100.000  qemu-system-arm          main_loop_wait
+12        0.0037  qemu-system-arm          slirp_select_poll
+  12       66.6667  qemu-system-arm          slirp_select_poll [self]
+  4        22.2222  libc-2.3.3.so            (no symbols)
+  1         5.5556  qemu-system-arm          .plt
+  1         5.5556  qemu-system-arm          updtime
+-------------------------------------------------------------------------------
+  97       100.000  qemu-system-arm          tb_find_slow
+11        0.0034  qemu-system-arm          tb_link_phys
+  80       80.8081  qemu-system-arm          tlb_protect_code
+  11       11.1111  qemu-system-arm          tb_link_phys [self]
+  8         8.0808  qemu-system-arm          tb_alloc_page
+-------------------------------------------------------------------------------
+  5        50.0000  qemu-system-arm          gen_movl_reg_T0
+  5        50.0000  qemu-system-arm          gen_movl_reg_TN
+10        0.0031  qemu-system-arm          gen_op_movl_r3_T0
+  10       100.000  qemu-system-arm          gen_op_movl_r3_T0 [self]
+-------------------------------------------------------------------------------
+  2         9.0909  qemu-system-arm          qemu_run_timers
+  2         9.0909  qemu-system-arm          io_writel
+  18       81.8182  qemu-system-arm          arm_timer_tick
+9         0.0028  qemu-system-arm          arm_timer_update
+  9        40.9091  qemu-system-arm          arm_timer_update [self]
+  4        18.1818  qemu-system-arm          arm_timer_reload
+  3        13.6364  qemu-system-arm          qemu_mod_timer
+  3        13.6364  qemu-system-arm          pic_set_irq_new
+  2         9.0909  qemu-system-arm          icp_pic_update
+  1         4.5455  qemu-system-arm          qemu_del_timer
+-------------------------------------------------------------------------------
+  141      100.000  qemu-system-arm          tlb_fill
+9         0.0028  qemu-system-arm          cpu_restore_state
+  131      92.2535  qemu-system-arm          gen_intermediate_code_pc
+  9         6.3380  qemu-system-arm          cpu_restore_state [self]
+  2         1.4085  qemu-system-arm          gen_intermediate_code_internal
+-------------------------------------------------------------------------------
+  1         9.0909  qemu-system-arm          gen_intermediate_code_internal
+  10       90.9091  qemu-system-arm          disas_arm_insn
+9         0.0028  qemu-system-arm          gen_add_data_offset
+  9        81.8182  qemu-system-arm          gen_add_data_offset [self]
+  2        18.1818  qemu-system-arm          gen_movl_T2_reg
+-------------------------------------------------------------------------------
+  3        17.6471  qemu-system-arm          gen_movl_reg_T1
+  6        35.2941  qemu-system-arm          disas_arm_insn
+  8        47.0588  qemu-system-arm          gen_movl_reg_T0
+9         0.0028  qemu-system-arm          gen_movl_reg_TN
+  9        52.9412  qemu-system-arm          gen_movl_reg_TN [self]
+  5        29.4118  qemu-system-arm          gen_op_movl_r3_T0
+  1         5.8824  qemu-system-arm          gen_op_movl_r0_T1
+  1         5.8824  qemu-system-arm          gen_op_movl_r4_T1
+  1         5.8824  qemu-system-arm          gen_op_movl_r5_T0
+-------------------------------------------------------------------------------
+  1        11.1111  qemu-system-arm          main_loop_wait
+  3        33.3333  qemu-system-arm          qemu_get_clock
+  5        55.5556  qemu-system-arm          cpu_get_clock
+9         0.0028  qemu-system-arm          get_clock
+  9        100.000  qemu-system-arm          get_clock [self]
+-------------------------------------------------------------------------------
+9         0.0028  qemu-system-arm          host_alarm_handler
+  9        28.1250  qemu-system-arm          host_alarm_handler [self]
+  8        25.0000  qemu-system-arm          cpu_interrupt
+  6        18.7500  qemu-system-arm          cpu_get_clock
+  6        18.7500  qemu-system-arm          qemu_get_clock
+  2         6.2500  qemu-system-arm          testandset
+  1         3.1250  qemu-system-arm          __divdi3
+-------------------------------------------------------------------------------
+  1        11.1111  qemu-system-arm          ldl_code
+  8        88.8889  qemu-system-arm          disas_arm_insn
+9         0.0028  qemu-system-arm          ldl_le_p
+  9        100.000  qemu-system-arm          ldl_le_p [self]
+-------------------------------------------------------------------------------
+  578      100.000  qemu-system-arm          tb_find_slow
+8         0.0025  qemu-system-arm          cpu_arm_gen_code
+  326      56.3040  qemu-system-arm          gen_intermediate_code
+  153      26.4249  qemu-system-arm          dyngen_code
+  64       11.0535  libc-2.3.3.so            (no symbols)
+  22        3.7997  qemu-system-arm          dyngen_labels
+  8         1.3817  qemu-system-arm          cpu_arm_gen_code [self]
+  4         0.6908  qemu-system-arm          gen_intermediate_code_internal
+  2         0.3454  qemu-system-arm          .plt
+-------------------------------------------------------------------------------
+  3        37.5000  qemu-system-arm          disas_arm_insn
+  5        62.5000  qemu-system-arm          gen_intermediate_code_internal
+8         0.0025  qemu-system-arm          gen_op_ldl_kernel
+  8        100.000  qemu-system-arm          gen_op_ldl_kernel [self]
+-------------------------------------------------------------------------------
+7         0.0022  qemu-system-arm          __stw_mmu
+  7        100.000  qemu-system-arm          __stw_mmu [self]
+-------------------------------------------------------------------------------
+  1         5.2632  qemu-system-arm          gen_movl_T2_reg
+  3        15.7895  qemu-system-arm          disas_arm_insn
+  6        31.5789  qemu-system-arm          gen_movl_T0_reg
+  9        47.3684  qemu-system-arm          gen_movl_T1_reg
+7         0.0022  qemu-system-arm          gen_movl_TN_reg
+  7        36.8421  qemu-system-arm          gen_movl_TN_reg [self]
+  2        10.5263  qemu-system-arm          gen_op_movl_T0_r2
+  2        10.5263  qemu-system-arm          gen_op_movl_T1_r5
+  1         5.2632  qemu-system-arm          gen_op_movl_T0_r1
+  1         5.2632  qemu-system-arm          gen_op_movl_T2_r3
+  1         5.2632  qemu-system-arm          gen_op_movl_T1_r4
+  1         5.2632  qemu-system-arm          gen_op_movl_T1_r9
+  1         5.2632  qemu-system-arm          gen_op_movl_T0_r10
+  1         5.2632  qemu-system-arm          gen_op_movl_T1_r12
+  1         5.2632  qemu-system-arm          gen_op_movl_T1_r14
+  1         5.2632  qemu-system-arm          gen_op_movl_T1_im
+-------------------------------------------------------------------------------
+  1        14.2857  qemu-system-arm          gen_movl_TN_reg
+  6        85.7143  qemu-system-arm          disas_arm_insn
+7         0.0022  qemu-system-arm          gen_op_movl_T1_im
+  7        100.000  qemu-system-arm          gen_op_movl_T1_im [self]
+-------------------------------------------------------------------------------
+  1        14.2857  qemu-system-arm          gen_movl_reg_T0
+  2        28.5714  qemu-system-arm          gen_goto_tb
+  4        57.1429  qemu-system-arm          gen_jmp
+7         0.0022  qemu-system-arm          gen_op_movl_r15_T0
+  7        100.000  qemu-system-arm          gen_op_movl_r15_T0 [self]
+-------------------------------------------------------------------------------
+7         0.0022  qemu-system-arm          lduw_le_p
+  7        100.000  qemu-system-arm          lduw_le_p [self]
+-------------------------------------------------------------------------------
+  1        16.6667  qemu-system-arm          host_alarm_handler
+  5        83.3333  qemu-system-arm          qemu_get_clock
+6         0.0019  qemu-system-arm          __divdi3
+  6        100.000  qemu-system-arm          __divdi3 [self]
+-------------------------------------------------------------------------------
+  2        12.5000  qemu-system-arm          main_loop_wait
+  2        12.5000  qemu-system-arm          arm_timer_write
+  2        12.5000  qemu-system-arm          arm_timer_tick
+  4        25.0000  qemu-system-arm          arm_timer_read
+  6        37.5000  qemu-system-arm          host_alarm_handler
+6         0.0019  qemu-system-arm          cpu_get_clock
+  9        45.0000  libc-2.3.3.so            (no symbols)
+  6        30.0000  qemu-system-arm          cpu_get_clock [self]
+  5        25.0000  qemu-system-arm          get_clock
+-------------------------------------------------------------------------------
+  2        33.3333  qemu-system-arm          gen_jmp
+  4        66.6667  qemu-system-arm          gen_intermediate_code_internal
+6         0.0019  qemu-system-arm          gen_op_exit_tb
+  6        100.000  qemu-system-arm          gen_op_exit_tb [self]
+-------------------------------------------------------------------------------
+  1         3.1250  qemu-system-arm          io_writeb
+  31       96.8750  qemu-system-arm          io_writew
+6         0.0019  qemu-system-arm          pl011_write
+  18       54.5455  qemu-system-arm          qemu_chr_write
+  9        27.2727  qemu-system-arm          pl011_update
+  6        18.1818  qemu-system-arm          pl011_write [self]
+-------------------------------------------------------------------------------
+  18       100.000  qemu-system-arm          qemu_chr_write
+6         0.0019  qemu-system-arm          stdio_write
+  10       55.5556  libpthread-0.10.so       (no symbols)
+  6        33.3333  qemu-system-arm          stdio_write [self]
+  2        11.1111  qemu-system-arm          unix_write
+-------------------------------------------------------------------------------
+  4        100.000  qemu-system-arm          tb_find_slow
+6         0.0019  qemu-system-arm          tb_alloc
+  6        100.000  qemu-system-arm          tb_alloc [self]
+-------------------------------------------------------------------------------
+  8        100.000  qemu-system-arm          tb_link_phys
+6         0.0019  qemu-system-arm          tb_alloc_page
+  6        75.0000  qemu-system-arm          tb_alloc_page [self]
+  2        25.0000  qemu-system-arm          invalidate_page_bitmap
+-------------------------------------------------------------------------------
+  7        100.000  qemu-system-arm          tb_reset_jump_recursive
+6         0.0019  qemu-system-arm          tb_reset_jump_recursive2
+  6        85.7143  qemu-system-arm          tb_reset_jump_recursive2 [self]
+  1        14.2857  qemu-system-arm          tb_reset_jump
+-------------------------------------------------------------------------------
+  5        100.000  qemu-system-arm          cpu_arm_exec
+5         0.0016  qemu-system-arm          cpsr_read
+  5        100.000  qemu-system-arm          cpsr_read [self]
+-------------------------------------------------------------------------------
+5         0.0016  qemu-system-arm          cpu_loop_exit
+  41       70.6897  libpthread-0.10.so       (no symbols)
+  11       18.9655  libc-2.3.3.so            (no symbols)
+  5         8.6207  qemu-system-arm          cpu_loop_exit [self]
+  1         1.7241  ld-2.3.3.so              (no symbols)
+-------------------------------------------------------------------------------
+  2        40.0000  qemu-system-arm          icp_pic_update
+  3        60.0000  qemu-system-arm          pic_set_irq_new
+5         0.0016  qemu-system-arm          cpu_reset_interrupt
+  5        100.000  qemu-system-arm          cpu_reset_interrupt [self]
+-------------------------------------------------------------------------------
+  2         0.6098  qemu-system-arm          tb_find_slow
+  326      99.3902  qemu-system-arm          cpu_arm_gen_code
+5         0.0016  qemu-system-arm          gen_intermediate_code
+  317      96.6463  qemu-system-arm          gen_intermediate_code_internal
+  5         1.5244  qemu-system-arm          disas_arm_insn
+  5         1.5244  qemu-system-arm          gen_intermediate_code [self]
+  1         0.3049  qemu-system-arm          gen_op_logic_T0_cc
+-------------------------------------------------------------------------------
+  1         4.0000  qemu-system-arm          gen_intermediate_code_internal
+  24       96.0000  qemu-system-arm          disas_arm_insn
+5         0.0016  qemu-system-arm          gen_movl_T0_reg
+  6        24.0000  qemu-system-arm          gen_movl_TN_reg
+  5        20.0000  qemu-system-arm          gen_movl_T0_reg [self]
+  3        12.0000  qemu-system-arm          gen_op_movl_T0_r5
+  3        12.0000  qemu-system-arm          gen_op_movl_T0_r14
+  2         8.0000  qemu-system-arm          gen_op_movl_T0_r0
+  2         8.0000  qemu-system-arm          gen_op_movl_T0_r3
+  1         4.0000  qemu-system-arm          gen_op_movl_T0_r2
+  1         4.0000  qemu-system-arm          gen_op_movl_T0_r6
+  1         4.0000  qemu-system-arm          gen_op_movl_T0_r10
+  1         4.0000  qemu-system-arm          gen_op_movl_T0_r13
+-------------------------------------------------------------------------------
+  1         3.5714  qemu-system-arm          gen_lookup_tb
+  7        25.0000  qemu-system-arm          gen_intermediate_code_internal
+  20       71.4286  qemu-system-arm          disas_arm_insn
+5         0.0016  qemu-system-arm          gen_movl_reg_T0
+  8        28.5714  qemu-system-arm          gen_movl_reg_TN
+  5        17.8571  qemu-system-arm          gen_op_movl_r3_T0
+  5        17.8571  qemu-system-arm          gen_movl_reg_T0 [self]
+  2         7.1429  qemu-system-arm          gen_op_movl_r2_T0
+  1         3.5714  qemu-system-arm          gen_op_movl_r0_T0
+  1         3.5714  qemu-system-arm          gen_op_movl_r4_T0
+  1         3.5714  qemu-system-arm          gen_op_movl_r5_T0
+  1         3.5714  qemu-system-arm          gen_op_movl_r7_T0
+  1         3.5714  qemu-system-arm          gen_op_movl_r8_T0
+  1         3.5714  qemu-system-arm          gen_op_movl_r10_T0
+  1         3.5714  qemu-system-arm          gen_op_movl_r11_T0
+  1         3.5714  qemu-system-arm          gen_op_movl_r15_T0
+-------------------------------------------------------------------------------
+  1        20.0000  qemu-system-arm          smc91c111_writew
+  1        20.0000  qemu-system-arm          io_writeb
+  3        60.0000  qemu-system-arm          io_writew
+5         0.0016  qemu-system-arm          smc91c111_writeb
+  5        100.000  qemu-system-arm          smc91c111_writeb [self]
+-------------------------------------------------------------------------------
+  1        25.0000  qemu-system-arm          icp_pic_update
+  3        75.0000  qemu-system-arm          pic_set_irq_new
+4         0.0012  qemu-system-arm          arm_pic_cpu_handler
+  4        100.000  qemu-system-arm          arm_pic_cpu_handler [self]
+-------------------------------------------------------------------------------
+  7        43.7500  qemu-system-arm          gen_jmp
+  9        56.2500  qemu-system-arm          gen_intermediate_code_internal
+4         0.0012  qemu-system-arm          gen_goto_tb
+  10       62.5000  qemu-system-arm          gen_op_movl_T0_im
+  4        25.0000  qemu-system-arm          gen_goto_tb [self]
+  2        12.5000  qemu-system-arm          gen_op_movl_r15_T0
+-------------------------------------------------------------------------------
+  1        25.0000  qemu-system-arm          gen_intermediate_code_internal
+  3        75.0000  qemu-system-arm          disas_arm_insn
+4         0.0012  qemu-system-arm          gen_op_addl_T1_im
+  4        100.000  qemu-system-arm          gen_op_addl_T1_im [self]
+-------------------------------------------------------------------------------
+  1        25.0000  qemu-system-arm          gen_movl_TN_reg
+  3        75.0000  qemu-system-arm          gen_movl_T1_reg
+4         0.0012  qemu-system-arm          gen_op_movl_T1_r4
+  4        100.000  qemu-system-arm          gen_op_movl_T1_r4 [self]
+-------------------------------------------------------------------------------
+  1        25.0000  qemu-system-arm          disas_arm_insn
+  3        75.0000  qemu-system-arm          gen_intermediate_code_internal
+4         0.0012  qemu-system-arm          gen_op_test_ne
+  4        100.000  qemu-system-arm          gen_op_test_ne [self]
+-------------------------------------------------------------------------------
+4         0.0012  qemu-system-arm          helper_get_cp15
+  4        100.000  qemu-system-arm          helper_get_cp15 [self]
+-------------------------------------------------------------------------------
+  2        11.7647  qemu-system-arm          arm_timer_update
+  7        41.1765  qemu-system-arm          io_writel
+  8        47.0588  qemu-system-arm          pic_set_irq_new
+4         0.0012  qemu-system-arm          icp_pic_update
+  10       55.5556  qemu-system-arm          pic_set_irq_new
+  4        22.2222  qemu-system-arm          icp_pic_update [self]
+  2        11.1111  qemu-system-arm          cpu_reset_interrupt
+  1         5.5556  qemu-system-arm          arm_pic_cpu_handler
+  1         5.5556  qemu-system-arm          cpu_interrupt
+-------------------------------------------------------------------------------
+  2        100.000  qemu-system-arm          io_readl
+4         0.0012  qemu-system-arm          integratorcm_read
+  4        100.000  qemu-system-arm          integratorcm_read [self]
+-------------------------------------------------------------------------------
+  1        25.0000  qemu-system-arm          vga_hw_update
+  3        75.0000  qemu-system-arm          gui_update
+4         0.0012  qemu-system-arm          pl110_update_display
+  4        100.000  qemu-system-arm          pl110_update_display [self]
+-------------------------------------------------------------------------------
+  1         5.8824  qemu-system-arm          qemu_run_timers
+  1         5.8824  qemu-system-arm          io_writel
+  3        17.6471  qemu-system-arm          gui_update
+  6        35.2941  qemu-system-arm          host_alarm_handler
+  6        35.2941  qemu-system-arm          main_loop_wait
+4         0.0012  qemu-system-arm          qemu_get_clock
+  5        29.4118  qemu-system-arm          __divdi3
+  5        29.4118  libc-2.3.3.so            (no symbols)
+  4        23.5294  qemu-system-arm          qemu_get_clock [self]
+  3        17.6471  qemu-system-arm          get_clock
+-------------------------------------------------------------------------------
+  1        25.0000  qemu-system-arm          arm_timer_tick
+  3        75.0000  qemu-system-arm          arm_timer_update
+4         0.0012  qemu-system-arm          qemu_mod_timer
+  4        100.000  qemu-system-arm          qemu_mod_timer [self]
+-------------------------------------------------------------------------------
+  36       100.000  qemu-system-arm          main_loop_wait
+4         0.0012  qemu-system-arm          qemu_run_timers
+  22       61.1111  qemu-system-arm          arm_timer_tick
+  7        19.4444  qemu-system-arm          gui_update
+  4        11.1111  qemu-system-arm          qemu_run_timers [self]
+  2         5.5556  qemu-system-arm          arm_timer_update
+  1         2.7778  qemu-system-arm          qemu_get_clock
+-------------------------------------------------------------------------------
+  1        25.0000  qemu-system-arm          pic_set_irq_new
+  1        25.0000  qemu-system-arm          cpu_interrupt
+  2        50.0000  qemu-system-arm          host_alarm_handler
+4         0.0012  qemu-system-arm          testandset
+  4        100.000  qemu-system-arm          testandset [self]
+-------------------------------------------------------------------------------
+  1        25.0000  qemu-system-arm          slirp_select_poll
+  3        75.0000  qemu-system-arm          main_loop_wait
+4         0.0012  qemu-system-arm          updtime
+  4        100.000  qemu-system-arm          updtime [self]
+-------------------------------------------------------------------------------
+  1        33.3333  qemu-system-arm          slirp_select_poll
+  2        66.6667  qemu-system-arm          cpu_arm_gen_code
+3        9.3e-04  qemu-system-arm          .plt
+  3        100.000  qemu-system-arm          .plt [self]
+-------------------------------------------------------------------------------
+  1        33.3333  qemu-system-arm          muldiv64
+  2        66.6667  qemu-system-arm          arm_timer_getcount
+3        9.3e-04  qemu-system-arm          __udivdi3
+  3        100.000  qemu-system-arm          __udivdi3 [self]
+-------------------------------------------------------------------------------
+  5        100.000  qemu-system-arm          arm_timer_read
+3        9.3e-04  qemu-system-arm          arm_timer_getcount
+  3        60.0000  qemu-system-arm          arm_timer_getcount [self]
+  2        40.0000  qemu-system-arm          __udivdi3
+-------------------------------------------------------------------------------
+  1         9.0909  qemu-system-arm          icp_pic_update
+  2        18.1818  qemu-system-arm          pic_set_irq_new
+  8        72.7273  qemu-system-arm          host_alarm_handler
+3        9.3e-04  qemu-system-arm          cpu_interrupt
+  8        66.6667  qemu-system-arm          tb_reset_jump_recursive
+  3        25.0000  qemu-system-arm          cpu_interrupt [self]
+  1         8.3333  qemu-system-arm          testandset
+-------------------------------------------------------------------------------
+  2         1.5038  qemu-system-arm          tlb_fill
+  131      98.4962  qemu-system-arm          cpu_restore_state
+3        9.3e-04  qemu-system-arm          gen_intermediate_code_pc
+  126      94.7368  qemu-system-arm          gen_intermediate_code_internal
+  3         2.2556  qemu-system-arm          gen_intermediate_code_pc [self]
+  2         1.5038  qemu-system-arm          gen_op_subl_T0_T1_cc
+  1         0.7519  qemu-system-arm          gen_op_logic_T0_cc
+  1         0.7519  qemu-system-arm          gen_set_label
+-------------------------------------------------------------------------------
+  2        18.1818  qemu-system-arm          gen_intermediate_code_internal
+  9        81.8182  qemu-system-arm          disas_arm_insn
+3        9.3e-04  qemu-system-arm          gen_movl_reg_T1
+  3        27.2727  qemu-system-arm          gen_movl_reg_TN
+  3        27.2727  qemu-system-arm          gen_movl_reg_T1 [self]
+  2        18.1818  qemu-system-arm          gen_op_movl_r0_T1
+  1         9.0909  qemu-system-arm          gen_op_movl_r1_T1
+  1         9.0909  qemu-system-arm          gen_op_movl_r3_T1
+  1         9.0909  qemu-system-arm          gen_op_movl_r12_T1
+-------------------------------------------------------------------------------
+  3        100.000  qemu-system-arm          gen_movl_T0_reg
+3        9.3e-04  qemu-system-arm          gen_op_movl_T0_r14
+  3        100.000  qemu-system-arm          gen_op_movl_T0_r14 [self]
+-------------------------------------------------------------------------------
+  1        33.3333  qemu-system-arm          gen_movl_T0_reg
+  2        66.6667  qemu-system-arm          gen_movl_TN_reg
+3        9.3e-04  qemu-system-arm          gen_op_movl_T0_r2
+  3        100.000  qemu-system-arm          gen_op_movl_T0_r2 [self]
+-------------------------------------------------------------------------------
+  3        100.000  qemu-system-arm          gen_movl_T0_reg
+3        9.3e-04  qemu-system-arm          gen_op_movl_T0_r5
+  3        100.000  qemu-system-arm          gen_op_movl_T0_r5 [self]
+-------------------------------------------------------------------------------
+  1        33.3333  qemu-system-arm          gen_movl_T1_reg
+  2        66.6667  qemu-system-arm          gen_movl_TN_reg
+3        9.3e-04  qemu-system-arm          gen_op_movl_T1_r5
+  3        100.000  qemu-system-arm          gen_op_movl_T1_r5 [self]
+-------------------------------------------------------------------------------
+  1        33.3333  qemu-system-arm          gen_movl_reg_TN
+  2        66.6667  qemu-system-arm          gen_movl_reg_T1
+3        9.3e-04  qemu-system-arm          gen_op_movl_r0_T1
+  3        100.000  qemu-system-arm          gen_op_movl_r0_T1 [self]
+-------------------------------------------------------------------------------
+  1        33.3333  qemu-system-arm          gen_intermediate_code_internal
+  2        66.6667  qemu-system-arm          gen_intermediate_code_pc
+3        9.3e-04  qemu-system-arm          gen_op_subl_T0_T1_cc
+  3        100.000  qemu-system-arm          gen_op_subl_T0_T1_cc [self]
+-------------------------------------------------------------------------------
+  1        33.3333  qemu-system-arm          pl050_update
+  2        66.6667  qemu-system-arm          pl011_update
+3        9.3e-04  qemu-system-arm          icp_pic_set_irq
+  3        100.000  qemu-system-arm          icp_pic_set_irq [self]
+-------------------------------------------------------------------------------
+  3        100.000  qemu-system-arm          io_writel
+3        9.3e-04  qemu-system-arm          icp_pic_write
+  3        100.000  qemu-system-arm          icp_pic_write [self]
+-------------------------------------------------------------------------------
+  1         4.7619  qemu-system-arm          pic_set_irq_new
+  1         4.7619  qemu-system-arm          io_writel
+  3        14.2857  qemu-system-arm          arm_timer_update
+  6        28.5714  qemu-system-arm          pl011_update
+  10       47.6190  qemu-system-arm          icp_pic_update
+3        9.3e-04  qemu-system-arm          pic_set_irq_new
+  8        38.0952  qemu-system-arm          icp_pic_update
+  3        14.2857  qemu-system-arm          arm_pic_cpu_handler
+  3        14.2857  qemu-system-arm          cpu_reset_interrupt
+  3        14.2857  qemu-system-arm          pic_set_irq_new [self]
+  2         9.5238  qemu-system-arm          cpu_interrupt
+  1         4.7619  qemu-system-arm          pic_set_irq_new
+  1         4.7619  qemu-system-arm          testandset
+-------------------------------------------------------------------------------
+  1        33.3333  qemu-system-arm          main_loop
+  2        66.6667  qemu-system-arm          main_loop_wait
+3        9.3e-04  qemu-system-arm          qemu_aio_poll
+  3        75.0000  qemu-system-arm          qemu_aio_poll [self]
+  1        25.0000  qemu-system-arm          qcow_aio_read
+-------------------------------------------------------------------------------
+  1        33.3333  qemu-system-arm          main_loop
+  2        66.6667  qemu-system-arm          main_loop_wait
+3        9.3e-04  qemu-system-arm          slirp_select_fill
+  3        100.000  qemu-system-arm          slirp_select_fill [self]
+-------------------------------------------------------------------------------
+  1        33.3333  qemu-system-arm          main_loop_wait
+  2        66.6667  qemu-system-arm          main_loop
+3        9.3e-04  qemu-system-arm          stdio_read_poll
+  3        100.000  qemu-system-arm          stdio_read_poll [self]
+-------------------------------------------------------------------------------
+  3        100.000  qemu-system-arm          tb_find_slow
+3        9.3e-04  qemu-system-arm          tb_phys_hash_func
+  3        100.000  qemu-system-arm          tb_phys_hash_func [self]
+-------------------------------------------------------------------------------
+  2        100.000  qemu-system-arm          muldiv64
+2        6.2e-04  qemu-system-arm          __umoddi3
+  2        100.000  qemu-system-arm          __umoddi3 [self]
+-------------------------------------------------------------------------------
+2        6.2e-04  qemu-system-arm          cpu_lock
+  2        100.000  qemu-system-arm          cpu_lock [self]
+-------------------------------------------------------------------------------
+2        6.2e-04  qemu-system-arm          cpu_unlock
+  2        100.000  qemu-system-arm          cpu_unlock [self]
+-------------------------------------------------------------------------------
+2        6.2e-04  qemu-system-arm          env_to_regs
+  2        100.000  qemu-system-arm          env_to_regs [self]
+-------------------------------------------------------------------------------
+  1        50.0000  qemu-system-arm          disas_arm_insn
+  1        50.0000  qemu-system-arm          gen_intermediate_code_internal
+2        6.2e-04  qemu-system-arm          gen_op_addl_T0_T1
+  2        100.000  qemu-system-arm          gen_op_addl_T0_T1 [self]
+-------------------------------------------------------------------------------
+  1        50.0000  qemu-system-arm          gen_intermediate_code
+  1        50.0000  qemu-system-arm          gen_intermediate_code_pc
+2        6.2e-04  qemu-system-arm          gen_op_logic_T0_cc
+  2        100.000  qemu-system-arm          gen_op_logic_T0_cc [self]
+-------------------------------------------------------------------------------
+  2        100.000  qemu-system-arm          gen_movl_T0_reg
+2        6.2e-04  qemu-system-arm          gen_op_movl_T0_r0
+  2        100.000  qemu-system-arm          gen_op_movl_T0_r0 [self]
+-------------------------------------------------------------------------------
+  1        50.0000  qemu-system-arm          gen_movl_T0_reg
+  1        50.0000  qemu-system-arm          gen_movl_TN_reg
+2        6.2e-04  qemu-system-arm          gen_op_movl_T0_r10
+  2        100.000  qemu-system-arm          gen_op_movl_T0_r10 [self]
+-------------------------------------------------------------------------------
+  2        100.000  qemu-system-arm          gen_movl_T0_reg
+2        6.2e-04  qemu-system-arm          gen_op_movl_T0_r3
+  2        100.000  qemu-system-arm          gen_op_movl_T0_r3 [self]
+-------------------------------------------------------------------------------
+  2        100.000  qemu-system-arm          gen_movl_T1_reg
+2        6.2e-04  qemu-system-arm          gen_op_movl_T1_r0
+  2        100.000  qemu-system-arm          gen_op_movl_T1_r0 [self]
+-------------------------------------------------------------------------------
+  1        50.0000  qemu-system-arm          gen_movl_T1_reg
+  1        50.0000  qemu-system-arm          gen_movl_TN_reg
+2        6.2e-04  qemu-system-arm          gen_op_movl_T1_r12
+  2        100.000  qemu-system-arm          gen_op_movl_T1_r12 [self]
+-------------------------------------------------------------------------------
+  2        100.000  qemu-system-arm          gen_movl_T1_reg
+2        6.2e-04  qemu-system-arm          gen_op_movl_T1_r2
+  2        100.000  qemu-system-arm          gen_op_movl_T1_r2 [self]
+-------------------------------------------------------------------------------
+  2        100.000  qemu-system-arm          gen_intermediate_code_internal
+2        6.2e-04  qemu-system-arm          gen_op_movl_r14_T0
+  2        100.000  qemu-system-arm          gen_op_movl_r14_T0 [self]
+-------------------------------------------------------------------------------
+  2        100.000  qemu-system-arm          gen_movl_reg_T0
+2        6.2e-04  qemu-system-arm          gen_op_movl_r2_T0
+  2        100.000  qemu-system-arm          gen_op_movl_r2_T0 [self]
+-------------------------------------------------------------------------------
+  1        50.0000  qemu-system-arm          gen_movl_reg_T0
+  1        50.0000  qemu-system-arm          gen_movl_reg_TN
+2        6.2e-04  qemu-system-arm          gen_op_movl_r5_T0
+  2        100.000  qemu-system-arm          gen_op_movl_r5_T0 [self]
+-------------------------------------------------------------------------------
+  2        100.000  qemu-system-arm          gen_intermediate_code_internal
+2        6.2e-04  qemu-system-arm          gen_op_stl_user
+  2        100.000  qemu-system-arm          gen_op_stl_user [self]
+-------------------------------------------------------------------------------
+  1        50.0000  qemu-system-arm          disas_arm_insn
+  1        50.0000  qemu-system-arm          gen_intermediate_code_internal
+2        6.2e-04  qemu-system-arm          gen_op_subl_T0_T1
+  2        100.000  qemu-system-arm          gen_op_subl_T0_T1 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          io_readl
+2        6.2e-04  qemu-system-arm          icp_pic_read
+  2        100.000  qemu-system-arm          icp_pic_read [self]
+-------------------------------------------------------------------------------
+  2        100.000  qemu-system-arm          tb_alloc_page
+2        6.2e-04  qemu-system-arm          invalidate_page_bitmap
+  2        100.000  qemu-system-arm          invalidate_page_bitmap [self]
+-------------------------------------------------------------------------------
+2        6.2e-04  qemu-system-arm          io_readl
+  10       66.6667  qemu-system-arm          arm_timer_read
+  2        13.3333  qemu-system-arm          integratorcm_read
+  2        13.3333  qemu-system-arm          io_readl [self]
+  1         6.6667  qemu-system-arm          icp_pic_read
+-------------------------------------------------------------------------------
+2        6.2e-04  qemu-system-arm          io_writel
+  21       50.0000  qemu-system-arm          integratorcm_set_ctrl
+  7        16.6667  qemu-system-arm          icp_pic_update
+  3         7.1429  qemu-system-arm          icp_pic_write
+  3         7.1429  qemu-system-arm          arm_timer_write
+  2         4.7619  qemu-system-arm          arm_timer_update
+  2         4.7619  qemu-system-arm          io_writel [self]
+  1         2.3810  qemu-system-arm          qemu_get_clock
+  1         2.3810  qemu-system-arm          smc91c111_writel
+  1         2.3810  qemu-system-arm          pic_set_irq_new
+  1         2.3810  qemu-system-arm          notdirty_mem_writel
+-------------------------------------------------------------------------------
+2        6.2e-04  qemu-system-arm          io_writew
+  31       81.5789  qemu-system-arm          pl011_write
+  3         7.8947  qemu-system-arm          smc91c111_writeb
+  2         5.2632  qemu-system-arm          smc91c111_writew
+  2         5.2632  qemu-system-arm          io_writew [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          io_writel
+2        6.2e-04  qemu-system-arm          notdirty_mem_writel
+  2        100.000  qemu-system-arm          notdirty_mem_writel [self]
+-------------------------------------------------------------------------------
+  2        100.000  qemu-system-arm          smc91c111_readw
+2        6.2e-04  qemu-system-arm          smc91c111_readb
+  2        100.000  qemu-system-arm          smc91c111_readb [self]
+-------------------------------------------------------------------------------
+2        6.2e-04  qemu-system-arm          stb_p
+  2        100.000  qemu-system-arm          stb_p [self]
+-------------------------------------------------------------------------------
+  8        28.5714  qemu-system-arm          cpu_interrupt
+  20       71.4286  qemu-system-arm          tb_reset_jump_recursive
+2        6.2e-04  qemu-system-arm          tb_reset_jump_recursive
+  20       68.9655  qemu-system-arm          tb_reset_jump_recursive
+  7        24.1379  qemu-system-arm          tb_reset_jump_recursive2
+  2         6.8966  qemu-system-arm          tb_reset_jump_recursive [self]
+-------------------------------------------------------------------------------
+  2        100.000  qemu-system-arm          stdio_write
+2        6.2e-04  qemu-system-arm          unix_write
+  2        100.000  qemu-system-arm          unix_write [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          main_loop
+1        3.1e-04  qemu-system-arm          DMA_run
+  1        100.000  qemu-system-arm          DMA_run [self]
+-------------------------------------------------------------------------------
+  10       100.000  qemu-system-arm          io_readl
+1        3.1e-04  qemu-system-arm          arm_timer_read
+  5        50.0000  qemu-system-arm          arm_timer_getcount
+  4        40.0000  qemu-system-arm          cpu_get_clock
+  1        10.0000  qemu-system-arm          arm_timer_read [self]
+-------------------------------------------------------------------------------
+  1        20.0000  qemu-system-arm          arm_timer_tick
+  4        80.0000  qemu-system-arm          arm_timer_update
+1        3.1e-04  qemu-system-arm          arm_timer_reload
+  4        80.0000  qemu-system-arm          muldiv64
+  1        20.0000  qemu-system-arm          arm_timer_reload [self]
+-------------------------------------------------------------------------------
+  3        100.000  qemu-system-arm          io_writel
+1        3.1e-04  qemu-system-arm          arm_timer_write
+  2        66.6667  qemu-system-arm          cpu_get_clock
+  1        33.3333  qemu-system-arm          arm_timer_write [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          disas_arm_insn
+1        3.1e-04  qemu-system-arm          gen_add_datah_offset
+  1        100.000  qemu-system-arm          gen_add_datah_offset [self]
+-------------------------------------------------------------------------------
+  16       100.000  qemu-system-arm          gen_intermediate_code_internal
+1        3.1e-04  qemu-system-arm          gen_jmp
+  7        43.7500  qemu-system-arm          gen_goto_tb
+  4        25.0000  qemu-system-arm          gen_op_movl_r15_T0
+  2        12.5000  qemu-system-arm          gen_op_exit_tb
+  1         6.2500  qemu-system-arm          gen_op_movl_T0_im
+  1         6.2500  qemu-system-arm          gen_op_movl_T0_0
+  1         6.2500  qemu-system-arm          gen_jmp [self]
+-------------------------------------------------------------------------------
+  2        100.000  qemu-system-arm          gen_add_data_offset
+1        3.1e-04  qemu-system-arm          gen_movl_T2_reg
+  1        50.0000  qemu-system-arm          gen_movl_TN_reg
+  1        50.0000  qemu-system-arm          gen_movl_T2_reg [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_intermediate_code_internal
+1        3.1e-04  qemu-system-arm          gen_new_label
+  1        100.000  qemu-system-arm          gen_new_label [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_intermediate_code_internal
+1        3.1e-04  qemu-system-arm          gen_op_addl_T1_T2
+  1        100.000  qemu-system-arm          gen_op_addl_T1_T2 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_intermediate_code_internal
+1        3.1e-04  qemu-system-arm          gen_op_andl_T0_T1
+  1        100.000  qemu-system-arm          gen_op_andl_T0_T1 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_intermediate_code_internal
+1        3.1e-04  qemu-system-arm          gen_op_bx_T0
+  1        100.000  qemu-system-arm          gen_op_bx_T0 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_intermediate_code_internal
+1        3.1e-04  qemu-system-arm          gen_op_ldl_user
+  1        100.000  qemu-system-arm          gen_op_ldl_user [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          disas_arm_insn
+1        3.1e-04  qemu-system-arm          gen_op_ldub_user
+  1        100.000  qemu-system-arm          gen_op_ldub_user [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_jmp
+1        3.1e-04  qemu-system-arm          gen_op_movl_T0_0
+  1        100.000  qemu-system-arm          gen_op_movl_T0_0 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_intermediate_code_internal
+1        3.1e-04  qemu-system-arm          gen_op_movl_T0_T2
+  1        100.000  qemu-system-arm          gen_op_movl_T0_T2 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_movl_TN_reg
+1        3.1e-04  qemu-system-arm          gen_op_movl_T0_r1
+  1        100.000  qemu-system-arm          gen_op_movl_T0_r1 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_movl_T0_reg
+1        3.1e-04  qemu-system-arm          gen_op_movl_T0_r13
+  1        100.000  qemu-system-arm          gen_op_movl_T0_r13 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_movl_T0_reg
+1        3.1e-04  qemu-system-arm          gen_op_movl_T0_r6
+  1        100.000  qemu-system-arm          gen_op_movl_T0_r6 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_movl_T1_reg
+1        3.1e-04  qemu-system-arm          gen_op_movl_T1_r1
+  1        100.000  qemu-system-arm          gen_op_movl_T1_r1 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_movl_T1_reg
+1        3.1e-04  qemu-system-arm          gen_op_movl_T1_r11
+  1        100.000  qemu-system-arm          gen_op_movl_T1_r11 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_movl_T1_reg
+1        3.1e-04  qemu-system-arm          gen_op_movl_T1_r13
+  1        100.000  qemu-system-arm          gen_op_movl_T1_r13 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_movl_TN_reg
+1        3.1e-04  qemu-system-arm          gen_op_movl_T1_r14
+  1        100.000  qemu-system-arm          gen_op_movl_T1_r14 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_movl_T1_reg
+1        3.1e-04  qemu-system-arm          gen_op_movl_T1_r3
+  1        100.000  qemu-system-arm          gen_op_movl_T1_r3 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_movl_T1_reg
+1        3.1e-04  qemu-system-arm          gen_op_movl_T1_r6
+  1        100.000  qemu-system-arm          gen_op_movl_T1_r6 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_movl_TN_reg
+1        3.1e-04  qemu-system-arm          gen_op_movl_T1_r9
+  1        100.000  qemu-system-arm          gen_op_movl_T1_r9 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_intermediate_code_internal
+1        3.1e-04  qemu-system-arm          gen_op_movl_T2_T0
+  1        100.000  qemu-system-arm          gen_op_movl_T2_T0 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_movl_TN_reg
+1        3.1e-04  qemu-system-arm          gen_op_movl_T2_r3
+  1        100.000  qemu-system-arm          gen_op_movl_T2_r3 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_movl_reg_T0
+1        3.1e-04  qemu-system-arm          gen_op_movl_r0_T0
+  1        100.000  qemu-system-arm          gen_op_movl_r0_T0 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_movl_reg_T0
+1        3.1e-04  qemu-system-arm          gen_op_movl_r10_T0
+  1        100.000  qemu-system-arm          gen_op_movl_r10_T0 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_movl_reg_T0
+1        3.1e-04  qemu-system-arm          gen_op_movl_r11_T0
+  1        100.000  qemu-system-arm          gen_op_movl_r11_T0 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_movl_reg_T1
+1        3.1e-04  qemu-system-arm          gen_op_movl_r12_T1
+  1        100.000  qemu-system-arm          gen_op_movl_r12_T1 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_movl_reg_T1
+1        3.1e-04  qemu-system-arm          gen_op_movl_r1_T1
+  1        100.000  qemu-system-arm          gen_op_movl_r1_T1 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_movl_reg_T1
+1        3.1e-04  qemu-system-arm          gen_op_movl_r3_T1
+  1        100.000  qemu-system-arm          gen_op_movl_r3_T1 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_movl_reg_T0
+1        3.1e-04  qemu-system-arm          gen_op_movl_r4_T0
+  1        100.000  qemu-system-arm          gen_op_movl_r4_T0 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_movl_reg_TN
+1        3.1e-04  qemu-system-arm          gen_op_movl_r4_T1
+  1        100.000  qemu-system-arm          gen_op_movl_r4_T1 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_movl_reg_T0
+1        3.1e-04  qemu-system-arm          gen_op_movl_r7_T0
+  1        100.000  qemu-system-arm          gen_op_movl_r7_T0 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_movl_reg_T0
+1        3.1e-04  qemu-system-arm          gen_op_movl_r8_T0
+  1        100.000  qemu-system-arm          gen_op_movl_r8_T0 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_intermediate_code_internal
+1        3.1e-04  qemu-system-arm          gen_op_notl_T1
+  1        100.000  qemu-system-arm          gen_op_notl_T1 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          disas_arm_insn
+1        3.1e-04  qemu-system-arm          gen_op_orl_T0_T1
+  1        100.000  qemu-system-arm          gen_op_orl_T0_T1 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_intermediate_code_internal
+1        3.1e-04  qemu-system-arm          gen_op_rsbl_T0_T1
+  1        100.000  qemu-system-arm          gen_op_rsbl_T0_T1 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          disas_arm_insn
+1        3.1e-04  qemu-system-arm          gen_op_sarl_T1_T0
+  1        100.000  qemu-system-arm          gen_op_sarl_T1_T0 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_intermediate_code_internal
+1        3.1e-04  qemu-system-arm          gen_op_shll_T1_T0
+  1        100.000  qemu-system-arm          gen_op_shll_T1_T0 [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_intermediate_code_internal
+1        3.1e-04  qemu-system-arm          gen_op_shll_T1_im
+  1        100.000  qemu-system-arm          gen_op_shll_T1_im [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_intermediate_code_internal
+1        3.1e-04  qemu-system-arm          gen_op_shrl_T1_im_cc
+  1        100.000  qemu-system-arm          gen_op_shrl_T1_im_cc [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_intermediate_code_internal
+1        3.1e-04  qemu-system-arm          gen_op_stl_kernel
+  1        100.000  qemu-system-arm          gen_op_stl_kernel [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_intermediate_code_internal
+1        3.1e-04  qemu-system-arm          gen_op_test_cc
+  1        100.000  qemu-system-arm          gen_op_test_cc [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_intermediate_code_internal
+1        3.1e-04  qemu-system-arm          gen_op_test_eq
+  1        100.000  qemu-system-arm          gen_op_test_eq [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          disas_arm_insn
+1        3.1e-04  qemu-system-arm          gen_op_test_hi
+  1        100.000  qemu-system-arm          gen_op_test_hi [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_intermediate_code_pc
+1        3.1e-04  qemu-system-arm          gen_set_label
+  1        100.000  qemu-system-arm          gen_set_label [self]
+-------------------------------------------------------------------------------
+1        3.1e-04  qemu-system-arm          icp_pit_read
+  1        100.000  qemu-system-arm          icp_pit_read [self]
+-------------------------------------------------------------------------------
+  108      100.000  qemu-system-arm          main
+1        3.1e-04  qemu-system-arm          main_loop
+  94       87.0370  qemu-system-arm          main_loop_wait
+  7         6.4815  libc-2.3.3.so            (no symbols)
+  2         1.8519  qemu-system-arm          stdio_read_poll
+  1         0.9259  qemu-system-arm          qemu_aio_poll
+  1         0.9259  qemu-system-arm          DMA_run
+  1         0.9259  qemu-system-arm          slirp_select_fill
+  1         0.9259  libpthread-0.10.so       (no symbols)
+  1         0.9259  qemu-system-arm          main_loop [self]
+-------------------------------------------------------------------------------
+  4        100.000  qemu-system-arm          arm_timer_reload
+1        3.1e-04  qemu-system-arm          muldiv64
+  2        50.0000  qemu-system-arm          __umoddi3
+  1        25.0000  qemu-system-arm          __udivdi3
+  1        25.0000  qemu-system-arm          muldiv64 [self]
+-------------------------------------------------------------------------------
+  9        100.000  qemu-system-arm          pl011_write
+1        3.1e-04  qemu-system-arm          pl011_update
+  6        66.6667  qemu-system-arm          pic_set_irq_new
+  2        22.2222  qemu-system-arm          icp_pic_set_irq
+  1        11.1111  qemu-system-arm          pl011_update [self]
+-------------------------------------------------------------------------------
+  1        50.0000  qemu-system-arm          ps2_queue
+  1        50.0000  qemu-system-arm          ps2_read_data
+1        3.1e-04  qemu-system-arm          pl050_update
+  1        50.0000  qemu-system-arm          icp_pic_set_irq
+  1        50.0000  qemu-system-arm          pl050_update [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          arm_timer_update
+1        3.1e-04  qemu-system-arm          qemu_del_timer
+  1        100.000  qemu-system-arm          qemu_del_timer [self]
+-------------------------------------------------------------------------------
+1        3.1e-04  qemu-system-arm          qemu_timer_expired
+  1        100.000  qemu-system-arm          qemu_timer_expired [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          io_writel
+1        3.1e-04  qemu-system-arm          smc91c111_writel
+  1        100.000  qemu-system-arm          smc91c111_writel [self]
+-------------------------------------------------------------------------------
+1        3.1e-04  qemu-system-arm          spin_lock
+  1        100.000  qemu-system-arm          spin_lock [self]
+-------------------------------------------------------------------------------
+1        3.1e-04  qemu-system-arm          spin_unlock
+  1        100.000  qemu-system-arm          spin_unlock [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          tb_reset_jump_recursive2
+1        3.1e-04  qemu-system-arm          tb_reset_jump
+  1        100.000  qemu-system-arm          tb_reset_jump [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          propagateFloat128NaN
+1        3.1e-04  qemu-system-arm          tcp_timers
+  1        100.000  qemu-system-arm          tcp_timers [self]
+-------------------------------------------------------------------------------
+  1        50.0000  qemu-system-arm          cpu_loop_exit
+  1        50.0000  qemu-system-arm          main
+0              0  ld-2.3.3.so              (no symbols)
+  0              0  ld-2.3.3.so              (no symbols) [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          bdrv_rw_em_cb
+0              0  libSDL-1.2.so.0.7.0      (no symbols)
+  0              0  libSDL-1.2.so.0.7.0      (no symbols) [self]
+-------------------------------------------------------------------------------
+  1         0.3413  qemu-system-arm          qemu_vmalloc
+  1         0.3413  qemu-system-arm          socreate
+  1         0.3413  qemu-system-arm          cpu_exec_init
+  2         0.6826  qemu-system-arm          getouraddr
+  4         1.3652  qemu-system-arm          slirp_select_poll
+  5         1.7065  qemu-system-arm          qemu_get_clock
+  7         2.3891  qemu-system-arm          main_loop
+  9         3.0717  qemu-system-arm          cpu_get_clock
+  11        3.7543  qemu-system-arm          cpu_loop_exit
+  64       21.8430  qemu-system-arm          cpu_arm_gen_code
+  188      64.1638  qemu-system-arm          _start
+0              0  libc-2.3.3.so            (no symbols)
+  0              0  libc-2.3.3.so            (no symbols) [self]
+-------------------------------------------------------------------------------
+  1         1.9231  qemu-system-arm          main_loop
+  10       19.2308  qemu-system-arm          stdio_write
+  41       78.8462  qemu-system-arm          cpu_loop_exit
+0              0  libpthread-0.10.so       (no symbols)
+  0              0  libpthread-0.10.so       (no symbols) [self]
+-------------------------------------------------------------------------------
+0              0  qemu-system-arm          _start
+  188      100.000  libc-2.3.3.so            (no symbols)
+  0              0  qemu-system-arm          _start [self]
+-------------------------------------------------------------------------------
+  22       100.000  qemu-system-arm          qemu_run_timers
+0              0  qemu-system-arm          arm_timer_tick
+  18       81.8182  qemu-system-arm          arm_timer_update
+  2         9.0909  qemu-system-arm          cpu_get_clock
+  1         4.5455  qemu-system-arm          qemu_mod_timer
+  1         4.5455  qemu-system-arm          arm_timer_reload
+  0              0  qemu-system-arm          arm_timer_tick [self]
+-------------------------------------------------------------------------------
+0              0  qemu-system-arm          bdrv_rw_em_cb
+  1        100.000  libSDL-1.2.so.0.7.0      (no symbols)
+  0              0  qemu-system-arm          bdrv_rw_em_cb [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          integratorcp_init
+0              0  qemu-system-arm          cpu_arm_init
+  1        100.000  qemu-system-arm          cpu_exec_init
+  0              0  qemu-system-arm          cpu_arm_init [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          cpu_arm_init
+0              0  qemu-system-arm          cpu_exec_init
+  1        100.000  libc-2.3.3.so            (no symbols)
+  0              0  qemu-system-arm          cpu_exec_init [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gen_set_psr_T0
+0              0  qemu-system-arm          gen_lookup_tb
+  1        100.000  qemu-system-arm          gen_movl_reg_T0
+  0              0  qemu-system-arm          gen_lookup_tb [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          disas_arm_insn
+0              0  qemu-system-arm          gen_set_psr_T0
+  1        100.000  qemu-system-arm          gen_lookup_tb
+  0              0  qemu-system-arm          gen_set_psr_T0 [self]
+-------------------------------------------------------------------------------
+  2        100.000  qemu-system-arm          net_slirp_init
+0              0  qemu-system-arm          getouraddr
+  2        100.000  libc-2.3.3.so            (no symbols)
+  0              0  qemu-system-arm          getouraddr [self]
+-------------------------------------------------------------------------------
+  7        100.000  qemu-system-arm          qemu_run_timers
+0              0  qemu-system-arm          gui_update
+  3        42.8571  qemu-system-arm          qemu_get_clock
+  3        42.8571  qemu-system-arm          pl110_update_display
+  1        14.2857  qemu-system-arm          vga_hw_update
+  0              0  qemu-system-arm          gui_update [self]
+-------------------------------------------------------------------------------
+  3        100.000  qemu-system-arm          integratorcp_init
+0              0  qemu-system-arm          icp_control_init
+  3        100.000  qemu-system-arm          cpu_register_physical_memory
+  0              0  qemu-system-arm          icp_control_init [self]
+-------------------------------------------------------------------------------
+  5        100.000  qemu-system-arm          integratorcp_init
+0              0  qemu-system-arm          icp_pic_init
+  4        80.0000  qemu-system-arm          cpu_register_physical_memory
+  1        20.0000  qemu-system-arm          phys_page_find_alloc
+  0              0  qemu-system-arm          icp_pic_init [self]
+-------------------------------------------------------------------------------
+  21       100.000  qemu-system-arm          integratorcm_set_ctrl
+0              0  qemu-system-arm          integratorcm_do_remap
+  21       100.000  qemu-system-arm          cpu_register_physical_memory
+  0              0  qemu-system-arm          integratorcm_do_remap [self]
+-------------------------------------------------------------------------------
+  2        100.000  qemu-system-arm          integratorcp_init
+0              0  qemu-system-arm          integratorcm_init
+  2        100.000  qemu-system-arm          cpu_register_physical_memory
+  0              0  qemu-system-arm          integratorcm_init [self]
+-------------------------------------------------------------------------------
+  21       100.000  qemu-system-arm          io_writel
+0              0  qemu-system-arm          integratorcm_set_ctrl
+  21       100.000  qemu-system-arm          integratorcm_do_remap
+  0              0  qemu-system-arm          integratorcm_set_ctrl [self]
+-------------------------------------------------------------------------------
+  63       100.000  qemu-system-arm          main
+0              0  qemu-system-arm          integratorcp926_init
+  63       100.000  qemu-system-arm          integratorcp_init
+  0              0  qemu-system-arm          integratorcp926_init [self]
+-------------------------------------------------------------------------------
+  63       100.000  qemu-system-arm          integratorcp926_init
+0              0  qemu-system-arm          integratorcp_init
+  42       66.6667  qemu-system-arm          cpu_register_physical_memory
+  10       15.8730  qemu-system-arm          phys_page_find_alloc
+  5         7.9365  qemu-system-arm          icp_pic_init
+  3         4.7619  qemu-system-arm          icp_control_init
+  2         3.1746  qemu-system-arm          integratorcm_init
+  1         1.5873  qemu-system-arm          cpu_arm_init
+  0              0  qemu-system-arm          integratorcp_init [self]
+-------------------------------------------------------------------------------
+0              0  qemu-system-arm          io_readw
+  2        100.000  qemu-system-arm          smc91c111_readw
+  0              0  qemu-system-arm          io_readw [self]
+-------------------------------------------------------------------------------
+0              0  qemu-system-arm          io_writeb
+  1        33.3333  qemu-system-arm          smc91c111_writeb
+  1        33.3333  qemu-system-arm          pl011_write
+  1        33.3333  qemu-system-arm          ps2_write_mouse
+  0              0  qemu-system-arm          io_writeb [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          qemu_send_packet
+0              0  qemu-system-arm          ip_input
+  1        100.000  qemu-system-arm          tcp_input
+  0              0  qemu-system-arm          ip_input [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          qcow_aio_read
+0              0  qemu-system-arm          lsi_execute_script
+  1        100.000  qemu-system-arm          update_snapshot_refcount
+  0              0  qemu-system-arm          lsi_execute_script [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          scsi_send_command
+0              0  qemu-system-arm          lsi_queue_tag
+  1        100.000  qemu-system-arm          propagateFloat128NaN
+  0              0  qemu-system-arm          lsi_queue_tag [self]
+-------------------------------------------------------------------------------
+0              0  qemu-system-arm          main
+  108      56.8421  qemu-system-arm          main_loop
+  63       33.1579  qemu-system-arm          integratorcp926_init
+  13        6.8421  qemu-system-arm          init_ioports
+  2         1.0526  qemu-system-arm          main_loop_wait
+  2         1.0526  qemu-system-arm          net_client_init
+  1         0.5263  qemu-system-arm          cpu_arm_exec
+  1         0.5263  ld-2.3.3.so              (no symbols)
+  0              0  qemu-system-arm          main [self]
+-------------------------------------------------------------------------------
+  2        100.000  qemu-system-arm          main
+0              0  qemu-system-arm          net_client_init
+  2        100.000  qemu-system-arm          net_slirp_init
+  0              0  qemu-system-arm          net_client_init [self]
+-------------------------------------------------------------------------------
+  2        100.000  qemu-system-arm          net_client_init
+0              0  qemu-system-arm          net_slirp_init
+  2        100.000  qemu-system-arm          getouraddr
+  0              0  qemu-system-arm          net_slirp_init [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          lsi_queue_tag
+0              0  qemu-system-arm          propagateFloat128NaN
+  1        100.000  qemu-system-arm          tcp_timers
+  0              0  qemu-system-arm          propagateFloat128NaN [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          ps2_write_mouse
+0              0  qemu-system-arm          ps2_queue
+  1        100.000  qemu-system-arm          pl050_update
+  0              0  qemu-system-arm          ps2_queue [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          pl050_read
+0              0  qemu-system-arm          ps2_read_data
+  1        100.000  qemu-system-arm          pl050_update
+  0              0  qemu-system-arm          ps2_read_data [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          io_writeb
+0              0  qemu-system-arm          ps2_write_mouse
+  1        100.000  qemu-system-arm          ps2_queue
+  0              0  qemu-system-arm          ps2_write_mouse [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          qemu_aio_poll
+0              0  qemu-system-arm          qcow_aio_read
+  1        100.000  qemu-system-arm          lsi_execute_script
+  0              0  qemu-system-arm          qcow_aio_read [self]
+-------------------------------------------------------------------------------
+  18       100.000  qemu-system-arm          pl011_write
+0              0  qemu-system-arm          qemu_chr_write
+  18       100.000  qemu-system-arm          stdio_write
+  0              0  qemu-system-arm          qemu_chr_write [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          smc91c111_do_tx
+0              0  qemu-system-arm          qemu_send_packet
+  1        100.000  qemu-system-arm          ip_input
+  0              0  qemu-system-arm          qemu_send_packet [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          phys_page_find_alloc
+0              0  qemu-system-arm          qemu_vmalloc
+  1        100.000  libc-2.3.3.so            (no symbols)
+  0              0  qemu-system-arm          qemu_vmalloc [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          update_snapshot_refcount
+0              0  qemu-system-arm          scsi_send_command
+  1        100.000  qemu-system-arm          lsi_queue_tag
+  0              0  qemu-system-arm          scsi_send_command [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          smc91c111_writew
+0              0  qemu-system-arm          smc91c111_do_tx
+  1        100.000  qemu-system-arm          qemu_send_packet
+  0              0  qemu-system-arm          smc91c111_do_tx [self]
+-------------------------------------------------------------------------------
+  2        100.000  qemu-system-arm          io_readw
+0              0  qemu-system-arm          smc91c111_readw
+  2        100.000  qemu-system-arm          smc91c111_readb
+  0              0  qemu-system-arm          smc91c111_readw [self]
+-------------------------------------------------------------------------------
+  2        100.000  qemu-system-arm          io_writew
+0              0  qemu-system-arm          smc91c111_writew
+  1        50.0000  qemu-system-arm          smc91c111_writeb
+  1        50.0000  qemu-system-arm          smc91c111_do_tx
+  0              0  qemu-system-arm          smc91c111_writew [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          tcp_input
+0              0  qemu-system-arm          socreate
+  1        100.000  libc-2.3.3.so            (no symbols)
+  0              0  qemu-system-arm          socreate [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          ip_input
+0              0  qemu-system-arm          tcp_input
+  1        100.000  qemu-system-arm          socreate
+  0              0  qemu-system-arm          tcp_input [self]
+-------------------------------------------------------------------------------
+  80       100.000  qemu-system-arm          tb_link_phys
+0              0  qemu-system-arm          tlb_protect_code
+  65       81.2500  qemu-system-arm          cpu_physical_memory_reset_dirty
+  15       18.7500  qemu-system-arm          tlb_reset_dirty_range
+  0              0  qemu-system-arm          tlb_protect_code [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          lsi_execute_script
+0              0  qemu-system-arm          update_snapshot_refcount
+  1        100.000  qemu-system-arm          scsi_send_command
+  0              0  qemu-system-arm          update_snapshot_refcount [self]
+-------------------------------------------------------------------------------
+  1        100.000  qemu-system-arm          gui_update
+0              0  qemu-system-arm          vga_hw_update
+  1        100.000  qemu-system-arm          pl110_update_display
+  0              0  qemu-system-arm          vga_hw_update [self]
+-------------------------------------------------------------------------------

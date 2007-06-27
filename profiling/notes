@@ -1,0 +1,16 @@
+executing wget binary:
+llvm-qemu with optimizations: ~40% spent in optimizations functions
+
+nbench:
+disabling tb chaining causes big performance drop
+
+system emulation:
+llvm-qemu without optimizations: ~70% spent in LLVM libs
+
+conclusion:
+-> hotspot approach for system emulation, wget
+-> direct block chaining to reduce time in cpu_arm_exec
+-> LLVM takes up way too much time, try to reduce this
+-> fast pass needed for hotspot approach to kick in
+
+code quality?

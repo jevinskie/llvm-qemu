@@ -1,0 +1,9 @@
+CPU: CPU with timer interrupt, speed 0 MHz (estimated)
+Profiling through timer interrupt
+samples  %        image name               symbol name
+63963    91.4986  anon (tgid:7593 range:0x810b2000-0x820b3000) (no symbols)
+5133      7.3427  qemu-arm                 cpu_arm_exec
+807       1.1544  qemu-arm                 tb_find_slow
+1         0.0014  qemu-arm                 cpu_loop
+1         0.0014  qemu-arm                 dyngen_code
+1         0.0014  qemu-arm                 gen_op_movl_T0_r14
