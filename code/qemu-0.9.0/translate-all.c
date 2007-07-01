@@ -143,6 +143,7 @@ int cpu_gen_code(CPUState *env, TranslationBlock *tb,
                  int max_code_size, int *gen_code_size_ptr)
 {
     int gen_code_size = 0;
+    extern int optimize;
 
 #ifdef USE_CODE_COPY
     if (code_copy_enabled &&
@@ -161,8 +162,11 @@ int cpu_gen_code(CPUState *env, TranslationBlock *tb,
 	/* do not compute label code offsets, leave them as offsets in gen_opc_buf */
         /* dyngen_labels(gen_labels, nb_gen_labels, gen_code_buf, gen_opc_buf); */
 
-        //tb->tc_ptr = dyngen_code(gen_opc_buf, gen_opparam_buf, gen_labels);
+	if (optimize)
         tb->tc_ptr = interpret(gen_opc_buf, gen_opparam_buf, gen_labels);
+	else
+        tb->tc_ptr = dyngen_code(gen_opc_buf, gen_opparam_buf, gen_labels);
+	optimize = 0;
     }
     *gen_code_size_ptr = gen_code_size;
 #ifdef DEBUG_DISAS

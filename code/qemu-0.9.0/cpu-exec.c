@@ -21,6 +21,8 @@
 #include "exec.h"
 #include "disas.h"
 
+#define HOTSPOT_THRESHOLD 10000
+
 #if !defined(CONFIG_SOFTMMU)
 #undef EAX
 #undef ECX
@@ -133,6 +135,8 @@ static TranslationBlock *tb_find_slow(target_ulong pc,
     tb->cs_base = cs_base;
     tb->flags = flags;
     //cpu_gen_code(env, tb, CODE_GEN_MAX_SIZE, &code_gen_size);
+    tb->size = 1;
+    code_gen_size = TARGET_PAGE_SIZE - 10;
     code_gen_ptr = (void *)(((unsigned long)code_gen_ptr + code_gen_size + CODE_GEN_ALIGN - 1) & ~(CODE_GEN_ALIGN - 1));
     
     /* check next page if needed */
@@ -599,15 +603,17 @@ int cpu_exec(CPUState *env1)
                 }
 #endif
                 tb = tb_find_fast();
-		if (tb->count == 1000000 || 1) {
+		if (tb->count < HOTSPOT_THRESHOLD) {
 		  int code_gen_size;
 		  extern int optimize;
 		  optimize = 1;
 		  cpu_gen_code(env, tb, CODE_GEN_MAX_SIZE, &code_gen_size);
+		} else if (tb->count == HOTSPOT_THRESHOLD) {
+		  int code_gen_size;
+		  extern int optimize;
+		  optimize = 0;
+		  cpu_gen_code(env, tb, CODE_GEN_MAX_SIZE, &code_gen_size);
 		}
-#ifdef PROFILE_HOTSPOTS
-		tb->count++;
-#endif
 #ifdef DEBUG_EXEC
                 if ((loglevel & CPU_LOG_EXEC)) {
                     fprintf(logfile, "Trace 0x%08lx [" TARGET_FMT_lx "] %s\n",
@@ -745,7 +751,10 @@ int cpu_exec(CPUState *env1)
 		fp.gp = code_gen_buffer + 2 * (1 << 20);
 		(*(void (*)(void)) &fp)();
 #else
-                //gen_func();
+                if (tb->count >= HOTSPOT_THRESHOLD) gen_func();
+#ifdef PROFILE_HOTSPOTS
+		tb->count++;
+#endif
 #endif
                 env->current_tb = NULL;
                 /* reset soft MMU for next block (it can currently

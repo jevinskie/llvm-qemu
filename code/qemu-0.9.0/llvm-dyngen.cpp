@@ -767,10 +767,10 @@ fprintf(outfile,
 
  fprintf(outfile, "//std::cout << *tb;\n"
 	 //	 "tb->dump();\n"
-"if (optimize) {\n"
+"//if (optimize) {\n"
 "//Passes->run(*tb);\n"
-"optimize = 0;\n"
-"}\n"
+"//optimize = 0;\n"
+"//}\n"
 "//extern int DebugFlag;\n"
 "//DebugFlag = 1;\n"
 "void *code = EE->getPointerToFunction(tb);\n"

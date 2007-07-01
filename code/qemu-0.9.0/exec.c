@@ -38,6 +38,10 @@
 #include <qemu.h>
 #endif
 
+#ifdef PROFILE_HOTSPOTS
+#include <math.h>
+#endif
+
 //#define DEBUG_TB_INVALIDATE
 //#define DEBUG_FLUSH
 //#define DEBUG_TLB
@@ -2409,8 +2413,10 @@ void dump_tb_execution_count()
     int i;
     TranslationBlock *tb;
     int execution_sum = 0;
+    int max = 0;
 
     printf("dumping\n");
+    
     for(i = 0; i < nb_tbs; i++) {
         tb = &tbs[i];
 	fprintf(logfile, "0x%08x: %d   size: %d\n", tb->pc, tb->count, tb->size);
@@ -2418,6 +2424,34 @@ void dump_tb_execution_count()
     }
     fprintf(logfile, "average executions: %d\n", execution_sum / nb_tbs);
     fprintf(logfile, "tb count: %d\n", nb_tbs);
+
+    /* get maximum execution count */
+    for (i = 0; i < nb_tbs; i++) {
+      tb = &tbs[i];
+      if (tb->count > max) max = tb->count;
+    }
+
+    {
+      int length = (int) ceil(log10(max)/log10(2) + 1);
+      int histogram[length];
+
+      for (i = 0; i < length; i++) {
+	histogram[i] = 0;
+      }
+
+      for (i = 0; i < nb_tbs; i++) {
+	tb = &tbs[i];
+	histogram[(int) round(log10(tb->count)/log10(2))] += 1;
+      }
+
+      execution_sum = 0;
+      for (i = 0; i < length; i++) {
+	execution_sum += histogram[i];
+	fprintf(logfile, "%10d         %10d\n", (int) pow(2, (double) i), histogram[i]);
+      }
+      fprintf(logfile, "sum: %d\n", execution_sum);
+    }
+
 }
 #endif
 
