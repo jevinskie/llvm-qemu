@@ -32,6 +32,8 @@
 
 extern void (*dyngen_code(const uint16_t *opc_buf, const uint32_t *opparam_buf,
 		          const long *gen_labels))();
+extern void (*interpret(const uint16_t *opc_buf, const uint32_t *opparam_buf,
+		          const long *gen_labels))();
 
 enum {
 #define DEF(s, n) INDEX_op_ ## s,
@@ -65,7 +67,7 @@ static const char *op_str[] = {
 #undef DEF
 };
 
-static uint8_t op_nb_args[] = {
+/*static*/ uint8_t op_nb_args[] = {
 #define DEF(s, n) n,
 #include "opc.h"
 #undef DEF
@@ -159,7 +161,8 @@ int cpu_gen_code(CPUState *env, TranslationBlock *tb,
 	/* do not compute label code offsets, leave them as offsets in gen_opc_buf */
         /* dyngen_labels(gen_labels, nb_gen_labels, gen_code_buf, gen_opc_buf); */
 
-        tb->tc_ptr = dyngen_code(gen_opc_buf, gen_opparam_buf, gen_labels);
+        //tb->tc_ptr = dyngen_code(gen_opc_buf, gen_opparam_buf, gen_labels);
+        tb->tc_ptr = interpret(gen_opc_buf, gen_opparam_buf, gen_labels);
     }
     *gen_code_size_ptr = gen_code_size;
 #ifdef DEBUG_DISAS

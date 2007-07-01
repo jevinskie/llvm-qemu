@@ -23,27 +23,27 @@
 #define SET_REG(x) REG = x
 #endif
 
-OP(glue(movl_T0_, REGNAME))
+void OPPROTO glue(op_movl_T0_, REGNAME)(void)
 {
     T0 = REG;
 }
 
-OP(glue(movl_T1_, REGNAME))
+void OPPROTO glue(op_movl_T1_, REGNAME)(void)
 {
     T1 = REG;
 }
 
-OP(glue(movl_T2_, REGNAME))
+void OPPROTO glue(op_movl_T2_, REGNAME)(void)
 {
     T2 = REG;
 }
 
-OP(glue(glue(movl_, REGNAME), _T0))
+void OPPROTO glue(glue(op_movl_, REGNAME), _T0)(void)
 {
     SET_REG (T0);
 }
 
-OP(glue(glue(movl_, REGNAME), _T1))
+void OPPROTO glue(glue(op_movl_, REGNAME), _T1)(void)
 {
     SET_REG (T1);
 }

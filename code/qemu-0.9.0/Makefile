@@ -34,7 +34,7 @@ endif
 
 all: $(TOOLS) $(DOCS) recurse-all
 
-subdir-%: dyngen$(EXESUF)
+subdir-%: llvm-dyngen$(EXESUF) dyngen$(EXESUF)
 	$(MAKE) -C $(subst subdir-,,$@) all
 
 recurse-all: $(patsubst %,subdir-%, $(TARGET_DIRS))
@@ -42,8 +42,11 @@ recurse-all: $(patsubst %,subdir-%, $(TARGET_DIRS))
 qemu-img$(EXESUF): qemu-img.c cutils.c block.c block-raw.c block-cow.c block-qcow.c aes.c block-vmdk.c block-cloop.c block-dmg.c block-bochs.c block-vpc.c block-vvfat.c block-qcow2.c
 	$(CC) -DQEMU_TOOL $(CFLAGS) $(CPPFLAGS) $(BASE_CFLAGS) $(LDFLAGS) $(BASE_LDFLAGS) -o $@ $^ -lz -lpthread $(LIBS)
 
-dyngen$(EXESUF): llvm-dyngen.cpp
+llvm-dyngen$(EXESUF): llvm-dyngen.cpp
 	g++ $(LLVM_CXXFLAGS) -o $@ $^ $(LLVM_LIBS) $(LLVM_LDFLAGS)
+
+dyngen$(EXESUF): dyngen.c
+	$(HOST_CC) $(CFLAGS) $(CPPFLAGS) $(BASE_CFLAGS) -o $@ $^
 
 QEMUAliasAnalysis.o: QEMUAliasAnalysis.cpp
 	g++ $(LLVM_CXXFLAGS) -c $@ $^ $(LLVM_LIBS)

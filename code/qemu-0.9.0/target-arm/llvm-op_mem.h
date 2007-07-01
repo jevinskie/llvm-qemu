@@ -3,7 +3,7 @@
 void helper_ld(uint32_t);
 /* Load from address T1 into T0.  */
 #define MEM_LD_OP(name) \
-void OPPROTO glue(op_ld##name,MEMSUFFIX)(void) \
+void OPPROTO glue(op_ld##name,MEMSUFFIX)(long __op_param1, long __op_param2, long __op_param3) \
 { \
     T0 = glue(ld##name,MEMSUFFIX)(T1); \
     FORCE_RET(); \
@@ -19,7 +19,7 @@ MEM_LD_OP(l)
 
 /* Store T0 to address T1.  */
 #define MEM_ST_OP(name) \
-void OPPROTO glue(op_st##name,MEMSUFFIX)(void) \
+void OPPROTO glue(op_st##name,MEMSUFFIX)(long __op_param1, long __op_param2, long __op_param3) \
 { \
     glue(st##name,MEMSUFFIX)(T1, T0); \
     FORCE_RET(); \
@@ -34,7 +34,7 @@ MEM_ST_OP(l)
 /* Swap T0 with memory at address T1.  */
 /* ??? Is this exception safe?  */
 #define MEM_SWP_OP(name, lname) \
-void OPPROTO glue(op_swp##name,MEMSUFFIX)(void) \
+void OPPROTO glue(op_swp##name,MEMSUFFIX)(long __op_param1, long __op_param2, long __op_param3) \
 { \
     uint32_t tmp; \
     cpu_lock(); \
@@ -52,12 +52,12 @@ MEM_SWP_OP(l, l)
 
 /* Floating point load/store.  Address is in T1 */
 #define VFP_MEM_OP(p, w) \
-void OPPROTO glue(op_vfp_ld##p,MEMSUFFIX)(void) \
+void OPPROTO glue(op_vfp_ld##p,MEMSUFFIX)(long __op_param1, long __op_param2, long __op_param3) \
 { \
     FT0##p = glue(ldf##w,MEMSUFFIX)(T1); \
     FORCE_RET(); \
 } \
-void OPPROTO glue(op_vfp_st##p,MEMSUFFIX)(void) \
+void OPPROTO glue(op_vfp_st##p,MEMSUFFIX)(long __op_param1, long __op_param2, long __op_param3) \
 { \
     glue(stf##w,MEMSUFFIX)(T1, FT0##p); \
     FORCE_RET(); \

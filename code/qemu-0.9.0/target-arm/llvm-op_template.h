@@ -1,5 +1,6 @@
 /*
- *  Host code generation
+ *  ARM micro operations (templates for various register related
+ *  operations)
  * 
  *  Copyright (c) 2003 Fabrice Bellard
  *
@@ -15,24 +16,38 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-#include <stdarg.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <inttypes.h>
 
-#include "config.h"
+#ifndef SET_REG
+#define SET_REG(x) REG = x
+#endif
 
-enum {
-#define DEF(s, n) INDEX_op_ ## s,
-#include "opc.h"
-#undef DEF
-    NB_OPS
-};
+OP(glue(movl_T0_, REGNAME))
+{
+    T0 = REG;
+}
 
-#include "dyngen.h"
-#include "llvm-op.h"
-#include "op.h"
+OP(glue(movl_T1_, REGNAME))
+{
+    T1 = REG;
+}
 
+OP(glue(movl_T2_, REGNAME))
+{
+    T2 = REG;
+}
+
+OP(glue(glue(movl_, REGNAME), _T0))
+{
+    SET_REG (T0);
+}
+
+OP(glue(glue(movl_, REGNAME), _T1))
+{
+    SET_REG (T1);
+}
+
+#undef REG
+#undef REGNAME
+#undef SET_REG

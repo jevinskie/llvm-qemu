@@ -26,6 +26,7 @@ BASE_LDFLAGS=
 #CFLAGS+=-Werror
 LIBS=
 HELPER_CFLAGS=$(CFLAGS)
+LLVM_DYNGEN=../llvm-dyngen$(EXESUF)
 DYNGEN=../dyngen$(EXESUF)
 # user emulator name
 TARGET_ARCH2=$(TARGET_ARCH)
@@ -228,7 +229,7 @@ OBJS+= libqemu.a
 
 # cpu emulator library
 LIBOBJS=exec.o kqemu.o translate-op.o translate-all.o cpu-exec.o\
-        translate.o 
+        translate.o op.o
 ifdef CONFIG_SOFTFLOAT
 LIBOBJS+=fpu/softfloat.o
 else
@@ -493,20 +494,26 @@ translate.o: translate.c gen-op.h opc.h cpu.h
 
 translate-all.o: translate-all.c opc.h cpu.h
 
-translate-op.o: translate-all.c op.h opc.h cpu.h
+translate-op.o: translate-all.c llvm-op.h opc.h cpu.h op.h
 	g++ -I. -I.. $(LLVM_CXXFLAGS) -fno-exceptions -pedantic -Wall -W -Wwrite-strings -Wno-long-long -Wunused -Wno-unused-parameter -c ../translate-op.cpp -o translate-op.o
 
 op.h: op.o $(DYNGEN)
 	$(DYNGEN) -o $@ $<
 
-opc.h: op.o $(DYNGEN)
-	$(DYNGEN) -c -o $@ $<
+opc.h: llvm-op.o $(LLVM_DYNGEN)
+	$(LLVM_DYNGEN) -c -o $@ $<
 
-gen-op.h: op.o $(DYNGEN)
-	$(DYNGEN) -g -o $@ $<
+gen-op.h: llvm-op.o $(LLVM_DYNGEN)
+	$(LLVM_DYNGEN) -g -o $@ $<
+
+llvm-op.h: llvm-op.o $(LLVM_DYNGEN)
+	$(LLVM_DYNGEN) -o $@ $<
+
+llvm-op.o: llvm-op.c
+	llvm-gcc -emit-llvm $(OP_CFLAGS) $(CPPFLAGS) -c -o $@ $<
 
 op.o: op.c
-	llvm-gcc -emit-llvm $(OP_CFLAGS) $(CPPFLAGS) -c -o $@ $<
+	$(CC) $(OP_CFLAGS) $(CPPFLAGS) -c -o $@ $<
 
 # HELPER_CFLAGS is used for all the code compiled with static register
 # variables
@@ -533,6 +540,7 @@ endif
 
 ifeq ($(TARGET_ARCH), arm)
 op.o: op.c op_template.h
+llvm-op.o : llvm-op.c llvm-op_template.h
 pl110.o: pl110_template.h
 endif
 
@@ -573,7 +581,7 @@ $(OBJS) $(LIBOBJS) $(VL_OBJS): config.h ../config-host.h
 	$(CC) $(CPPFLAGS) -c -o $@ $<
 
 clean:
-	rm -f *.o  *.a *~ $(PROGS) gen-op.h opc.h op.h nwfpe/*.o slirp/*.o fpu/*.o
+	rm -f *.o  *.a *~ $(PROGS) gen-op.h opc.h op.h llvm-op.h nwfpe/*.o slirp/*.o fpu/*.o
 
 install: all 
 ifneq ($(PROGS),)

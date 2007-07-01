@@ -132,7 +132,7 @@ static TranslationBlock *tb_find_slow(target_ulong pc,
     tb->tc_ptr = tc_ptr;
     tb->cs_base = cs_base;
     tb->flags = flags;
-    cpu_gen_code(env, tb, CODE_GEN_MAX_SIZE, &code_gen_size);
+    //cpu_gen_code(env, tb, CODE_GEN_MAX_SIZE, &code_gen_size);
     code_gen_ptr = (void *)(((unsigned long)code_gen_ptr + code_gen_size + CODE_GEN_ALIGN - 1) & ~(CODE_GEN_ALIGN - 1));
     
     /* check next page if needed */
@@ -599,11 +599,11 @@ int cpu_exec(CPUState *env1)
                 }
 #endif
                 tb = tb_find_fast();
-		if (tb->count == 1000000) {
+		if (tb->count == 1000000 || 1) {
 		  int code_gen_size;
 		  extern int optimize;
 		  optimize = 1;
-		  //cpu_gen_code(env, tb, CODE_GEN_MAX_SIZE, &code_gen_size);
+		  cpu_gen_code(env, tb, CODE_GEN_MAX_SIZE, &code_gen_size);
 		}
 #ifdef PROFILE_HOTSPOTS
 		tb->count++;
@@ -745,7 +745,7 @@ int cpu_exec(CPUState *env1)
 		fp.gp = code_gen_buffer + 2 * (1 << 20);
 		(*(void (*)(void)) &fp)();
 #else
-                gen_func();
+                //gen_func();
 #endif
                 env->current_tb = NULL;
                 /* reset soft MMU for next block (it can currently

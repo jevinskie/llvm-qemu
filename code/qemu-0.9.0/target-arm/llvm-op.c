@@ -20,6 +20,7 @@
  */
 #include "exec.h"
 
+#define FORCE_RET()
 #define EXIT_TB() return;
 #define GOTO_LABEL_PARAM(n) { __op_gen_label ## n (); return n; }
 
@@ -27,10 +28,10 @@ void __op_gen_label1() {}
 void __op_gen_label2() {}
 void __op_gen_label3() {}
 
-#define OP_(name) void OPPROTO op_##name ()
+#define OP_(name) void OPPROTO op_##name (long __op_param1, long __op_param2, long __op_param3)
 #define OP(name) OP_(name)
 
-#define INT_OP(name) int OPPROTO op_##name ()
+#define INT_OP(name) int OPPROTO op_##name (long __op_param1, long __op_param2, long __op_param3)
 #define RETURN return 0;
 
 #define REGNAME r0
@@ -459,13 +460,13 @@ OP(logicq_cc)
 /* memory access */
 
 #define MEMSUFFIX _raw
-#include "op_mem.h"
+#include "llvm-op_mem.h"
 
 #if !defined(CONFIG_USER_ONLY)
 #define MEMSUFFIX _user
-#include "op_mem.h"
+#include "llvm-op_mem.h"
 #define MEMSUFFIX _kernel
-#include "op_mem.h"
+#include "llvm-op_mem.h"
 #endif
 
 /* shifts */
