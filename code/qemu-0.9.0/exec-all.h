@@ -176,7 +176,7 @@ typedef struct TranslationBlock {
 #define CF_FP_USED     0x0004 /* fp ops are used in the TB or in a chained TB */
 #define CF_SINGLE_INSN 0x0008 /* compile only a single instruction */
 
-    void (*tc_ptr)();    /* pointer to the translated code */
+    int (*tc_ptr)();    /* pointer to the translated code */
     /* next matching tb for physical address. */
     struct TranslationBlock *phys_hash_next; 
     /* first and second physical page containing code. The lower bit
@@ -276,7 +276,7 @@ static inline void tb_set_jmp_target(TranslationBlock *tb,
 static inline void tb_set_jmp_target(TranslationBlock *tb, 
                                      int n, unsigned long addr)
 {
-  /* tb->tb_next[n] = addr; */
+    tb->tb_next[n] = addr;
 }
 
 #endif

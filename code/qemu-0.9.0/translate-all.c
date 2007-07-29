@@ -30,7 +30,7 @@
 #include "exec-all.h"
 #include "disas.h"
 
-extern void (*dyngen_code(const uint16_t *opc_buf, const uint32_t *opparam_buf,
+extern int (*dyngen_code(const uint16_t *opc_buf, const uint32_t *opparam_buf,
 		          const long *gen_labels))();
 extern void (*interpret(const uint16_t *opc_buf, const uint32_t *opparam_buf,
 		          const long *gen_labels))();

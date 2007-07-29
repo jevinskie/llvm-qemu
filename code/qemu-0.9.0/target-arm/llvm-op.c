@@ -23,6 +23,8 @@
 #define FORCE_RET()
 #define EXIT_TB() return;
 #define GOTO_LABEL_PARAM(n) { __op_gen_label ## n (); return n; }
+#define GOTO_TB(opname, tbparam, n) \
+return ((TranslationBlock *) tbparam)->tb_next[n];
 
 void __op_gen_label1() {}
 void __op_gen_label2() {}
@@ -365,12 +367,12 @@ INT_OP(test_le)
     RETURN
 }
 
-OP(goto_tb0)
+INT_OP(goto_tb0)
 {
     GOTO_TB(op_goto_tb0, PARAM1, 0);
 }
 
-OP(goto_tb1)
+INT_OP(goto_tb1)
 {
     GOTO_TB(op_goto_tb1, PARAM1, 1);
 }

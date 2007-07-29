@@ -21,7 +21,7 @@
 #include "exec.h"
 #include "disas.h"
 
-#define HOTSPOT_THRESHOLD 10000
+#define HOTSPOT_THRESHOLD 0
 
 #if !defined(CONFIG_SOFTMMU)
 #undef EAX
@@ -136,7 +136,8 @@ static TranslationBlock *tb_find_slow(target_ulong pc,
     tb->flags = flags;
     //cpu_gen_code(env, tb, CODE_GEN_MAX_SIZE, &code_gen_size);
     tb->size = 1;
-    code_gen_size = TARGET_PAGE_SIZE - 10;
+    code_gen_size = 1;
+/*     code_gen_size = TARGET_PAGE_SIZE - 10; */
     code_gen_ptr = (void *)(((unsigned long)code_gen_ptr + code_gen_size + CODE_GEN_ALIGN - 1) & ~(CODE_GEN_ALIGN - 1));
     
     /* check next page if needed */
@@ -242,7 +243,7 @@ int cpu_exec(CPUState *env1)
     target_ulong tmp_T0;
 #endif
     int ret, interrupt_request;
-    void (*gen_func)(void);
+    int (*gen_func)(void);
     TranslationBlock *tb;
     uint8_t *tc_ptr;
 
@@ -751,7 +752,14 @@ int cpu_exec(CPUState *env1)
 		fp.gp = code_gen_buffer + 2 * (1 << 20);
 		(*(void (*)(void)) &fp)();
 #else
-                if (tb->count >= HOTSPOT_THRESHOLD) gen_func();
+                if (tb->count >= HOTSPOT_THRESHOLD) {
+                    int result;
+                    do {
+                        result = gen_func();
+                        /* printf("executing at: %x\n", result); */
+                        gen_func = result;
+                    } while (result);
+                }
 #ifdef PROFILE_HOTSPOTS
 		tb->count++;
 #endif

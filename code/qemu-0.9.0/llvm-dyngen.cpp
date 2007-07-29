@@ -237,6 +237,86 @@ int get_arg_count(const char *name, Function *op)
     return nb_args;
 }
 
+// generate code for goto_tb ops
+void gen_code_int_op_goto_tb(const char *name,
+              FILE *outfile, Function *op)
+{
+    uint8_t args_present[MAX_ARGS];
+    int nb_args, i, n;
+    const char *p;
+
+    for(i = 0;i < MAX_ARGS; i++)
+        args_present[i] = 0;
+
+    // compute the number of arguments by looking at
+    // the uses of the op parameters
+    for (Function::arg_iterator i = op->arg_begin(), e = op->arg_end(); i != e; ++i) {
+      const char *tmpArgName = i->getName().c_str();
+      char *argName = (char *) malloc(strlen(tmpArgName + 1));
+      strcpy(argName, tmpArgName);
+
+      if (strstart(argName, "__op_param", &p)) {
+	if (i->hasNUsesOrMore(1)) {
+	  n = strtoul(p, NULL, 10);
+	  if (n > MAX_ARGS)
+	    error("too many arguments in %s", name);
+	  args_present[n - 1] = 1;
+	}
+      }
+    }
+
+    nb_args = 0;
+    while (nb_args < MAX_ARGS && args_present[nb_args])
+        nb_args++;
+
+    for(i = nb_args; i < MAX_ARGS; i++) {
+        if (args_present[i])
+            error("inconsistent argument numbering in %s", name);
+    }
+
+    // add local variables for op parameters
+    if (nb_args > 0) {
+        fprintf(outfile, "    long ");
+        for(i = 0; i < nb_args; i++) {
+	    if (i != 0)
+	        fprintf(outfile, ", ");
+	    fprintf(outfile, "param%d", i + 1);
+        }
+        fprintf(outfile, ";\n");
+    }
+
+    // load parameres in variables
+    for(i = 0; i < nb_args; i++) {
+        fprintf(outfile, "    param%d = *opparam_ptr++;\n", i + 1);
+    }
+
+    // load op parameters into the arguments of the call
+    fprintf(outfile, "Value * args[MAX_ARGS];\n");
+    for (i = 0; i < nb_args; i++) {
+      fprintf(outfile, "args[%d] = ConstantInt::get(Type::Int32Ty, param%d);\n", i, i + 1);
+    }
+    for (i = nb_args; i < MAX_ARGS; i++) {
+      fprintf(outfile, "args[%d] = zero;\n", i);
+    }
+    // add call to micro op
+    fprintf(outfile, "    currCall = new CallInst(M->getFunction(\"%s\"), (Value **)&args, %d, \"\", currInst);\n", name, MAX_ARGS);
+
+    // leave TB function when result of call is <> 0
+    fprintf(outfile,
+            "newBB = new BasicBlock(\"\", tb);\n"
+            "new ReturnInst(currCall, newBB);\n"
+            "currInst->eraseFromParent();\n"
+            "currSwitch = new SwitchInst(currCall, newBB, 1, currBB);\n"
+            "currBB = new BasicBlock(\"\", tb);\n"
+            "currInst = new ReturnInst(fallThrough, currBB);\n"
+            "currSwitch->addCase(ConstantInt::get(Type::Int32Ty, 0), currBB);\n"
+            );
+
+    fprintf(outfile, "    InlineFunction(currCall);");
+	    // inlining can change the basic block the return instruction belongs to
+	    fprintf(outfile, "    currBB = currInst->getParent();");
+}
+
 // generate code for ops which return a void value
 void gen_code_void_op(const char *name,
               FILE *outfile, Function *op)
@@ -301,11 +381,21 @@ void gen_code_void_op(const char *name,
     // add call to micro op
     fprintf(outfile, "    currCall = new CallInst(M->getFunction(\"%s\"), (Value **)&args, %d, \"\", currInst);\n", name, MAX_ARGS);
     if (strcmp(name, "op_exit_tb") == 0) {
-      fprintf(outfile, "    //new ReturnInst(currBB);\n"
+      fprintf(outfile,
 	      "     currBB = new BasicBlock(\"\", tb);\n"
-	      "     currInst = new ReturnInst(currBB);\n"
+	      "     currInst = new ReturnInst(fallThrough, currBB);\n"
 	      );
       
+    } else if (strcmp(name, "op_goto_tb0")) {
+//         fprintf(outfile,
+// 	      "     currBB = new BasicBlock(\"\", tb);\n"
+// 	      "     currInst = new ReturnInst(tb0, currBB);\n"
+// 	      );
+    } else if (strcmp(name, "op_goto_tb1")) {
+//         fprintf(outfile,
+// 	      "     currBB = new BasicBlock(\"\", tb);\n"
+// 	      "     currInst = new ReturnInst(tb1, currBB);\n"
+// 	      );
     }
     fprintf(outfile, "    InlineFunction(currCall);");
 	    // inlining can change the basic block the return instruction belongs to
@@ -381,7 +471,7 @@ void gen_code_int_op(const char *name,
     fprintf(outfile, "    currInst->eraseFromParent();\n");
     fprintf(outfile, "    currSwitch = new SwitchInst(currCall, newBB, 1, currBB);\n");
     fprintf(outfile, "    currBB = newBB;\n");
-    fprintf(outfile, "    currInst = new ReturnInst(currBB);\n");
+    fprintf(outfile, "    currInst = new ReturnInst(fallThrough, currBB);\n");
     fprintf(outfile, "    InlineFunction(currCall);\n");
 
     // register branch destinations
@@ -460,7 +550,11 @@ void gen_code(const char *name,
 	if (retType == Type::VoidTy) {
 	  gen_code_void_op(name, outfile, op);
 	} else if (retType == Type::Int32Ty) {
-	  gen_code_int_op(name, outfile, op);
+        if (strcmp(name, "op_goto_tb0") == 0 || strcmp(name, "op_goto_tb1") == 0) {
+            gen_code_int_op_goto_tb(name, outfile, op);
+        } else {
+            gen_code_int_op(name, outfile, op);
+        }
 	} else {
 	  error("found micro op with unknown return type\n");
 	}
@@ -633,7 +727,6 @@ fprintf(outfile,
 "using namespace llvm;\n"
 "ExecutionEngine *EE;\n"
 "Module *M;\n"
-"Function *ops2[100];\n"
 "FunctionPassManager *Passes;\n"
 "int optimize;\n"
 "struct label {\n"
@@ -663,10 +756,13 @@ fprintf(outfile,
 "Passes = new FunctionPassManager(MP);\n"
 "Passes->add(new TargetData(M));\n"
 "Passes->add(createQemuAAPass());\n"
-"Passes->add(createLoadValueNumberingPass());\n"
-"Passes->add(createGCSEPass());\n"
-"Passes->add(createDeadStoreEliminationPass());\n"
-"Passes->add(createInstructionCombiningPass());\n"
+//"Passes->add(createRedundantLoadEliminationPass());\n"
+//"Passes->add(createGVNPass());\n"
+//"Passes->add(createFastDeadStoreEliminationPass());\n"
+ "Passes->add(createLoadValueNumberingPass());\n"
+ "Passes->add(createGCSEPass());\n"
+ "Passes->add(createDeadStoreEliminationPass());\n"
+ "Passes->add(createInstructionCombiningPass());\n"
 "\n"
 "EE = ExecutionEngine::create(MP, false);\n"
 	);
@@ -678,7 +774,7 @@ fprintf(outfile,
 
 
 fprintf(outfile,
-"extern \"C\" void (*dyngen_code(\n"
+"extern \"C\" int (*dyngen_code(\n"
 "                const uint16_t *opc_buf, const uint32_t *opparam_buf, const long *gen_labels))()\n"
 "{\n"
 "    const uint16_t *opc_ptr;\n"
@@ -694,7 +790,7 @@ fprintf(outfile,
 fprintf(outfile,
 "  if (M == 0) init_jit();\n"
 	"  Function *tb =\n"
-	"    cast<Function>(M->getOrInsertFunction(\"\", Type::VoidTy, (Type *)0));\n"
+	"    cast<Function>(M->getOrInsertFunction(\"\", Type::Int32Ty, (Type *)0));\n"
 // "  const std::vector<const Type *>& empty = std::vector<const Type *>();\n"
 // "  const Type * resultType = Type::VoidTy;\n"
 // "  FunctionType *funcType = FunctionType::get((const Type *) Type::VoidTy, empty, false, (const ParamAttrsList *)0);\n"
@@ -705,11 +801,12 @@ fprintf(outfile,
 "    SwitchInst *currSwitch;\n"
 "    BasicBlock *newBB;\n"
 "    Value *zero = ConstantInt::get(Type::Int32Ty, 0);\n"
+"    Value *fallThrough = ConstantInt::get(Type::Int32Ty, 0);\n"
 "    struct label * labels[512];\n"
 "    for (int i = 0; i < 512; i++) labels[i] = 0;\n"
 );
 
- fprintf(outfile, "Instruction *currInst = new ReturnInst(currBB);\n"); 
+ fprintf(outfile, "Instruction *currInst = new ReturnInst(fallThrough, currBB);\n"); 
 
 	/* Generate prologue, if needed. */ 
 
@@ -724,7 +821,7 @@ fprintf(outfile,
 "            new BranchInst(newBB, currBB);\n"
 "            tmp->inst->addCase(ConstantInt::get(Type::Int32Ty, tmp->param), newBB);\n"
 "            currBB = newBB;\n"
-"            currInst = new ReturnInst(currBB);\n"
+"            currInst = new ReturnInst(fallThrough, currBB);\n"
 "        }\n");
  
 
@@ -765,10 +862,10 @@ fprintf(outfile,
 
 /* generate some code patching */ 
 
- fprintf(outfile, "//std::cout << *tb;\n"
+ fprintf(outfile, "//std::cerr << *tb;\n"
 	 //	 "tb->dump();\n"
 "//if (optimize) {\n"
-"//Passes->run(*tb);\n"
+"Passes->run(*tb);\n"
 "//optimize = 0;\n"
 "//}\n"
 "//extern int DebugFlag;\n"
@@ -782,7 +879,7 @@ fprintf(outfile,
     //fprintf(outfile, "flush_icache_range((unsigned long)gen_code_buf, (unsigned long)gen_code_ptr);\n");
 
     //fprintf(outfile, "return gen_code_ptr -  gen_code_buf;\n");
-    fprintf(outfile, "return (void (*)())code;\n");
+    fprintf(outfile, "return (int (*)())code;\n");
     fprintf(outfile, "}\n\n");
 
     }

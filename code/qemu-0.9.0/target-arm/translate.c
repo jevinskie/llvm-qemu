@@ -1016,11 +1016,9 @@ static inline void gen_goto_tb(DisasContext *s, int n, uint32_t dest)
     tb = s->tb;
     if ((tb->pc & TARGET_PAGE_MASK) == (dest & TARGET_PAGE_MASK)) {
         if (n == 0)
-	    /* gen_op_goto_tb0(TBPARAM(tb)); */
-	    gen_op_goto_tb0();
+            gen_op_goto_tb0(TBPARAM(tb));
         else
-       	    /* gen_op_goto_tb1(TBPARAM(tb)); */
-            gen_op_goto_tb1();
+       	    gen_op_goto_tb1(TBPARAM(tb));
         gen_op_movl_T0_im(dest);
         gen_op_movl_r15_T0();
         gen_op_movl_T0_im((long)tb + n);

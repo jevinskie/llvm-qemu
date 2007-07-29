@@ -43,7 +43,7 @@
 #endif
 
 //#define DEBUG_TB_INVALIDATE
-//#define DEBUG_FLUSH
+#define DEBUG_FLUSH
 //#define DEBUG_TLB
 //#define DEBUG_UNASSIGNED
 
@@ -464,7 +464,8 @@ static inline void tb_jmp_remove(TranslationBlock *tb, int n)
    another TB */
 static inline void tb_reset_jump(TranslationBlock *tb, int n)
 {
-    tb_set_jmp_target(tb, n, (unsigned long)(tb->tc_ptr + tb->tb_next_offset[n]));
+    /* tb_set_jmp_target(tb, n, (unsigned long)(tb->tc_ptr + tb->tb_next_offset[n])); */
+    tb_set_jmp_target(tb, n, 0);
 }
 
 static inline void tb_phys_invalidate(TranslationBlock *tb, unsigned int page_addr)
@@ -1108,7 +1109,8 @@ void cpu_set_log(int log_flags)
 {
     loglevel = log_flags;
     if (loglevel && !logfile) {
-        logfile = fopen(logfilename, "w");
+        //logfile = fopen(logfilename, "w");
+        logfile = stderr;
         if (!logfile) {
             perror(logfilename);
             _exit(1);
