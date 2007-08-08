@@ -16,16 +16,16 @@
 using namespace llvm;
 
 namespace llvm {
-  struct VISIBILITY_HIDDEN QemuAA : public FunctionPass, public AliasAnalysis {
+  struct VISIBILITY_HIDDEN QemuAA : public ModulePass, public AliasAnalysis {
     static char ID; // Class identification, replacement for typeinfo
-    QemuAA() : FunctionPass((intptr_t)&ID) {}
+    QemuAA() : ModulePass((intptr_t)&ID) {}
 
     virtual void getAnalysisUsage(AnalysisUsage &AU) const {
       AU.setPreservesAll();
       AliasAnalysis::getAnalysisUsage(AU);
     }
 
-    bool runOnFunction(Function &F) {
+    bool runOnModule(Module &M) {
       InitializeAliasAnalysis(this);
       return false;
     }
@@ -91,5 +91,5 @@ namespace llvm {
   // Declare that we implement the AliasAnalysis interface
   RegisterAnalysisGroup<AliasAnalysis> V(U);
 
-  FunctionPass *llvm::createQemuAAPass() { return new QemuAA(); }
+  ModulePass *llvm::createQemuAAPass() { return new QemuAA(); }
 }

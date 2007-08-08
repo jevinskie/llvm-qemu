@@ -301,6 +301,10 @@ void gen_code_int_op_goto_tb(const char *name,
     // add call to micro op
     fprintf(outfile, "    currCall = new CallInst(M->getFunction(\"%s\"), (Value **)&args, %d, \"\", currInst);\n", name, MAX_ARGS);
 
+    // load op parameters into the arguments of the call
+    
+    // add call to micro op
+
     // leave TB function when result of call is <> 0
     fprintf(outfile,
             "newBB = new BasicBlock(\"\", tb);\n"
@@ -365,7 +369,7 @@ void gen_code_void_op(const char *name,
         fprintf(outfile, ";\n");
     }
 
-    // load parameres in variables
+    // load parameters in variables
     for(i = 0; i < nb_args; i++) {
         fprintf(outfile, "    param%d = *opparam_ptr++;\n", i + 1);
     }
@@ -720,6 +724,7 @@ fprintf(outfile,
 "#include \"llvm/Target/TargetData.h\"\n"
 "#include \"llvm/Analysis/LoadValueNumbering.h\"\n"
 "#include \"llvm/Transforms/Scalar.h\"\n"
+"#include \"llvm/Support/CommandLine.h\"\n"
 "#include \"QEMUAliasAnalysis.h\"\n"
 "#include <iostream>\n"
 
@@ -727,7 +732,9 @@ fprintf(outfile,
 "using namespace llvm;\n"
 "ExecutionEngine *EE;\n"
 "Module *M;\n"
-"FunctionPassManager *Passes;\n"
+"Module *OM;\n"
+        //"FunctionPassManager *Passes;\n"
+"PassManager *Passes;\n"
 "int optimize;\n"
 "struct label {\n"
 "    SwitchInst *inst;\n"
@@ -752,25 +759,47 @@ fprintf(outfile,
 "    std::cout << \"micro op bitcode file could not be read\\n\";\n"
 "    //exit(-1);\n"
 "  }\n"
+"OM = CloneModule(M);\n"
+"    for (Module::iterator i = OM->begin(), e = OM->end(); i != e; ++i) {\n"
+"      Function *f = (Function *) i;\n"
+"\n"
+"      if (f->getName().compare(0, 3, \"op_\")== 0) {\n"
+"f->removeFromParent();\n"
+        //"std::cout << \"match\\n\";\n"
+"      ;}\n"
+"    }\n"
+        //"std::cout << *OM;\n"
 "ExistingModuleProvider* MP = new ExistingModuleProvider(M);\n"
-"Passes = new FunctionPassManager(MP);\n"
+        //"Passes = new FunctionPassManager(MP);\n"
+"Passes = new PassManager();\n"
 "Passes->add(new TargetData(M));\n"
 "Passes->add(createQemuAAPass());\n"
-//"Passes->add(createRedundantLoadEliminationPass());\n"
-//"Passes->add(createGVNPass());\n"
-//"Passes->add(createFastDeadStoreEliminationPass());\n"
- "Passes->add(createLoadValueNumberingPass());\n"
- "Passes->add(createGCSEPass());\n"
- "Passes->add(createDeadStoreEliminationPass());\n"
- "Passes->add(createInstructionCombiningPass());\n"
-"\n"
+        //"Passes->add(createGVNPass());\n"
+        //"Passes->add(createLoadValueNumberingPass());\n"
+        //  "Passes->add(createGCSEPass());\n"
+        "Passes->add(createRedundantLoadEliminationPass());\n"
+
+        "Passes->add(createFastDeadStoreEliminationPass());\n"
+
+
+        //  "Passes->add(createDeadStoreEliminationPass());\n"
+        //"Passes->add(createInstructionCombiningPass());\n"
 "EE = ExecutionEngine::create(MP, false);\n"
 	);
  add_resolv(outfile);
+
+    fprintf(outfile, "std::vector<char*> Args;\n"
+"Args.push_back(\"llvm-qemu\");\n"
+"Args.push_back(\"--help\");\n"
+"Args.push_back(0);\n"
+"int pseudo_argc = Args.size()-1;\n"
+"cl::ParseCommandLineOptions(pseudo_argc, (char**)&Args[0]);\n"
+);
 	fprintf(outfile,
 		//"std::cout << \"JIT initialized\\n\";\n"
 "}\n"
 	);
+
 
 
 fprintf(outfile,
@@ -862,16 +891,34 @@ fprintf(outfile,
 
 /* generate some code patching */ 
 
+// create module in whom to perform optimizations
+// this module contains type information, declarations of external functions,
+// but no micro op function definitions
+// -> strip micro ops from loaded bitcode file
+
+// create TB function in the micro op module as usual
+// since micro ops get inlined the created TB function won't have any
+// references to micro ops
+// clone TB function into optimization module
+// run optimizations passes
+// clone optimized TB function back into the micro op module
+
+
  fprintf(outfile, "//std::cerr << *tb;\n"
 	 //	 "tb->dump();\n"
 "//if (optimize) {\n"
-"Passes->run(*tb);\n"
+         //"Passes->run(*tb);\n"
+"tb->removeFromParent();\n"
+"OM->getFunctionList().push_back(tb);\n"
+"//std::cout << *OM;\n"
+"Passes->run(*OM);\n"
+"//std::cout << *OM;\n"
+"tb->removeFromParent();\n"
+"M->getFunctionList().push_back(tb);\n"
 "//optimize = 0;\n"
 "//}\n"
-"//extern int DebugFlag;\n"
-"//DebugFlag = 1;\n"
 "void *code = EE->getPointerToFunction(tb);\n"
-"//DebugFlag = 0;\n"
+"//tb->deleteBody();\n"
 	    //"if (code == NULL) {std::cout << \"compilation failed\\n\"; } else {std::cout << \"compilation successful\\n\"; }"
 );
     /* flush instruction cache */

@@ -5,5 +5,5 @@
 #include "llvm/Support/Compiler.h"
 
 namespace llvm {
-FunctionPass *createQemuAAPass();
+ModulePass *createQemuAAPass();
 }
