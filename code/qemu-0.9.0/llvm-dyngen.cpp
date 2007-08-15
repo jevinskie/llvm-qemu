@@ -291,19 +291,26 @@ void gen_code_int_op_goto_tb(const char *name,
     }
 
     // load op parameters into the arguments of the call
-    fprintf(outfile, "Value * args[MAX_ARGS];\n");
-    for (i = 0; i < nb_args; i++) {
-      fprintf(outfile, "args[%d] = ConstantInt::get(Type::Int32Ty, param%d);\n", i, i + 1);
-    }
-    for (i = nb_args; i < MAX_ARGS; i++) {
-      fprintf(outfile, "args[%d] = zero;\n", i);
-    }
+//     fprintf(outfile, "Value * args[MAX_ARGS];\n");
+//     for (i = 0; i < nb_args; i++) {
+//       fprintf(outfile, "args[%d] = ConstantInt::get(Type::Int32Ty, param%d);\n", i, i + 1);
+//     }
+//     for (i = nb_args; i < MAX_ARGS; i++) {
+//       fprintf(outfile, "args[%d] = zero;\n", i);
+//     }
     // add call to micro op
-    fprintf(outfile, "    currCall = new CallInst(M->getFunction(\"%s\"), (Value **)&args, %d, \"\", currInst);\n", name, MAX_ARGS);
+    //fprintf(outfile, "    currCall = new CallInst(M->getFunction(\"%s\"), (Value **)&args, %d, \"\", currInst);\n", name, MAX_ARGS);
 
     // load op parameters into the arguments of the call
-    
+    fprintf(outfile, "std::vector<Value *> args;\n");
+    for (i = 0; i < nb_args; i++) {
+        fprintf(outfile, "args.push_back(ConstantInt::get(Type::Int32Ty, param%d));\n", i + 1);
+    }
+    for (i = nb_args; i < MAX_ARGS; i++) {
+      fprintf(outfile, "args.push_back(zero);\n", i);
+    }
     // add call to micro op
+    fprintf(outfile, "    currCall = new CallInst(M->getFunction(\"%s\"), args.begin(), args.end(), \"\", currInst);\n", name);
 
     // leave TB function when result of call is <> 0
     fprintf(outfile,
@@ -375,15 +382,27 @@ void gen_code_void_op(const char *name,
     }
 
     // load op parameters into the arguments of the call
-    fprintf(outfile, "Value * args[MAX_ARGS];\n");
+//     fprintf(outfile, "Value * args[MAX_ARGS];\n");
+//     for (i = 0; i < nb_args; i++) {
+//       fprintf(outfile, "args[%d] = ConstantInt::get(Type::Int32Ty, param%d);\n", i, i + 1);
+//     }
+//     for (i = nb_args; i < MAX_ARGS; i++) {
+//       fprintf(outfile, "args[%d] = zero;\n", i);
+//     }
+    // add call to micro op
+    //fprintf(outfile, "    currCall = new CallInst(M->getFunction(\"%s\"), (Value **)&args, %d, \"\", currInst);\n", name, MAX_ARGS);
+
+    // load op parameters into the arguments of the call
+    fprintf(outfile, "std::vector<Value *> args;\n");
     for (i = 0; i < nb_args; i++) {
-      fprintf(outfile, "args[%d] = ConstantInt::get(Type::Int32Ty, param%d);\n", i, i + 1);
+        fprintf(outfile, "args.push_back(ConstantInt::get(Type::Int32Ty, param%d));\n", i + 1);
     }
     for (i = nb_args; i < MAX_ARGS; i++) {
-      fprintf(outfile, "args[%d] = zero;\n", i);
+      fprintf(outfile, "args.push_back(zero);\n");
     }
     // add call to micro op
-    fprintf(outfile, "    currCall = new CallInst(M->getFunction(\"%s\"), (Value **)&args, %d, \"\", currInst);\n", name, MAX_ARGS);
+    fprintf(outfile, "    currCall = new CallInst(M->getFunction(\"%s\"), args.begin(), args.end(), \"\", currInst);\n", name);
+
     if (strcmp(name, "op_exit_tb") == 0) {
       fprintf(outfile,
 	      "     currBB = new BasicBlock(\"\", tb);\n"
@@ -464,13 +483,22 @@ void gen_code_int_op(const char *name,
         fprintf(outfile, "    param%d = *opparam_ptr++;\n", i + 1);
     }
 
-    fprintf(outfile, "Value * args[MAX_ARGS];\n");
-    for (i = 0; i < MAX_ARGS; i++) {
-      fprintf(outfile, "args[%d] = zero;\n", i);
-    }
+//     fprintf(outfile, "Value * args[MAX_ARGS];\n");
+//     for (i = 0; i < MAX_ARGS; i++) {
+//       fprintf(outfile, "args[%d] = zero;\n", i);
+//     }
     
     // add call to micro op
-    fprintf(outfile, "    currCall = new CallInst(M->getFunction(\"%s\"), (Value **)&args, %d, \"\", currInst);\n", name, MAX_ARGS);
+    //fprintf(outfile, "    currCall = new CallInst(M->getFunction(\"%s\"), (Value **)&args, %d, \"\", currInst);\n", name, MAX_ARGS);
+
+    // load op parameters into the arguments of the call
+    fprintf(outfile, "std::vector<Value *> args;\n");
+    for (i = 0; i < MAX_ARGS; i++) {
+        fprintf(outfile, "args.push_back(zero);\n");
+    }
+    // add call to micro op
+    fprintf(outfile, "    currCall = new CallInst(M->getFunction(\"%s\"), args.begin(), args.end(), \"\", currInst);\n", name);
+
     fprintf(outfile, "    newBB = new BasicBlock(\"\", tb);\n");
     fprintf(outfile, "    currInst->eraseFromParent();\n");
     fprintf(outfile, "    currSwitch = new SwitchInst(currCall, newBB, 1, currBB);\n");
@@ -725,8 +753,11 @@ fprintf(outfile,
 "#include \"llvm/Analysis/LoadValueNumbering.h\"\n"
 "#include \"llvm/Transforms/Scalar.h\"\n"
 "#include \"llvm/Support/CommandLine.h\"\n"
+"#include \"llvm/CodeGen/LinkAllCodegenComponents.h\"\n"
 "#include \"QEMUAliasAnalysis.h\"\n"
 "#include <iostream>\n"
+"#include <fstream.h>\n"
+"#include <iomanip.h>\n"
 
 "#define MAX_ARGS 3\n"
 "using namespace llvm;\n"
@@ -742,6 +773,18 @@ fprintf(outfile,
 "};\n");
 
 add_decls(outfile);
+
+ fprintf(outfile,
+"extern \"C\" { void dump_module()\n"
+"{\n"
+"ofstream out;\n"
+"out.open(\"ir\", ios::out);\n"
+"WriteBitcodeToFile(M, out);\n"
+"out.close();\n"
+"std::cout << \"module written\";\n"
+"}\n"
+"}\n"
+         );
 
 fprintf(outfile,
 "void init_jit()\n"
@@ -776,13 +819,10 @@ fprintf(outfile,
 "Passes->add(createQemuAAPass());\n"
         //"Passes->add(createGVNPass());\n"
         //"Passes->add(createLoadValueNumberingPass());\n"
-        //  "Passes->add(createGCSEPass());\n"
+        //"Passes->add(createGCSEPass());\n"
         "Passes->add(createRedundantLoadEliminationPass());\n"
 
-        "Passes->add(createFastDeadStoreEliminationPass());\n"
-
-
-        //  "Passes->add(createDeadStoreEliminationPass());\n"
+        "Passes->add(createDeadStoreEliminationPass());\n"
         //"Passes->add(createInstructionCombiningPass());\n"
 "EE = ExecutionEngine::create(MP, false);\n"
 	);
@@ -790,7 +830,13 @@ fprintf(outfile,
 
     fprintf(outfile, "std::vector<char*> Args;\n"
 "Args.push_back(\"llvm-qemu\");\n"
-"Args.push_back(\"--help\");\n"
+// "Args.push_back(\"-regalloc=simple\");\n"
+// "Args.push_back(\"-pre-RA-sched=none\");\n"
+// "Args.push_back(\"-spiller=simple\");\n"
+// "Args.push_back(\"-disable-post-RA-scheduler\");\n"
+            //"Args.push_back(\"-disable-fp-elim\");\n"
+            //"Args.push_back(\"-disable-spill-fusing\");\n"
+            //"Args.push_back(\"-join-liveintervals=false\");\n"
 "Args.push_back(0);\n"
 "int pseudo_argc = Args.size()-1;\n"
 "cl::ParseCommandLineOptions(pseudo_argc, (char**)&Args[0]);\n"

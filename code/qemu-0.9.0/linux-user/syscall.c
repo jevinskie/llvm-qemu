@@ -3190,6 +3190,8 @@ long do_syscall(void *cpu_env, int num, long arg1, long arg2, long arg3,
 #ifdef PROFILE_HOTSPOTS
 	extern void dump_tb_execution_count();
 	dump_tb_execution_count();
+    extern void dump_module();
+    dump_module();
 #endif
         ret = get_errno(exit_group(arg1));
         break;
