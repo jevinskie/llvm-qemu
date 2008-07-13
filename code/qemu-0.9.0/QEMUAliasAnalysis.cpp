@@ -91,5 +91,5 @@ namespace llvm {
   // Declare that we implement the AliasAnalysis interface
   RegisterAnalysisGroup<AliasAnalysis> V(U);
 
-  ModulePass *llvm::createQemuAAPass() { return new QemuAA(); }
+  ModulePass *createQemuAAPass() { return new QemuAA(); }
 }
